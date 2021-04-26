@@ -157,35 +157,150 @@ Retention （级别小->大）
 
 - source    ： 保留在原码                              APT：可以生产额外的辅助类
 - class       ：  保留在 class 字节码               字节码增强
-- runtime    ：保留在运行时。  反射，JVM保留
+- runtime    ：保留在运行时。                     运行时通过  反射  处理一些逻辑，JVM保留
 
 
 
-APT： annotation  processor  tools  （注解处理器）
+> APT： annotation  processor  tools  （注解处理器）
+
+> Android studio创建普通的Java模块    ：  apply plugin: 'java-library'
+
+> android studio 编译时： 会做成很多个task任务进行编译   Task:app:processDebugResources UP-TO-DATE
+
+>  字节码增加： 在字节码中写代码。
+
+> 运行：javac  -classpath  xxxx.jar   aaa.java  bbb.java
 
 
 
-Android studio创建普通的Java模块    ：  apply plugin: 'java-library'
+## 2.1 注解结合反射
 
+>  查看某个项目进程占用： 任务管理器（性能）---> 打开资源监视器--->管理的句柄  （输入项目名称）
 
+获取构造器：
 
-android studio 编译时： 会做成很多个task任务进行编译   Task:app:processDebugResources UP-TO-DATE
+- getConstructors() 
+- ...
 
+获取类的成员变量：
 
+- getFileds()       - 获得类所有的公共字段
+- getDeclaredFields()   - 获得类声明的所有字段
+- ...
 
-字节码增加： 在字节码中写代码。
+获取调用方法：
 
-运行：javac  -classpath  xxxx.jar   aaa.java  bbb.java
+- getMethods()
+- ...
 
+```java
+    //实例一：实现功能，注解获取资源id对应的view
+    @InjectView(R.id.textview)
+    TextView textView;
+    
+    @Target({ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface InjectView{
+        @IdRes int value();
+    }
 
+    static class InjectUtils{
+        public static void inject(Activity activity){
+            Class<? extends Activity> activityClass = activity.getClass();
+            Field[] declaredFields = activityClass.getDeclaredFields();
+            for (Field field : declaredFields) {
+                //获取注解
+                if (field.isAnnotationPresent(InjectView.class)) {
+                    InjectView fieldAnnotation = field.getAnnotation(InjectView.class);
+                    //获取资源id
+                    int id = fieldAnnotation.value();
+                    View view = activity.findViewById(id);
+                    field.setAccessible(true);
+                    try {
+                        //设置给view
+                        field.set(activity, view);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
+                
+            }
+        }
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //注入activity       
+        InjectUtils.inject(this);
+    }
+```
 
+```java
+		//实例一： 实现页面跳转，跳转后注解获取参数
+    @Target({ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Autowired{
+        String value();
+    }
+    static class FirstAct extends Activity{
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Intent intent = new Intent(this, SecondAct.class);
+            intent.putExtra("key1", 1);
+            intent.putExtra("key2", "2");
+            intent.putExtra("key3", true);
+            startActivity(intent);
+        }
+    }
 
+    static class SecondAct extends Activity{
+        @Autowired("key1")
+        int v1;
+        @Autowired("key2")
+        String v2;
+        @Autowired("key3")
+        boolean v3;
 
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            //传统方式
+//            v1 = getIntent().getStringExtra("key1");
+            AutowiredUtils.init(this);
+        }
+    }
 
-
-
-
+    static class AutowiredUtils{
+        public static void init(Activity activity){
+            Intent intent = activity.getIntent();
+            Class<? extends Activity> activityClass = activity.getClass();
+            Field[] declaredFields = activityClass.getDeclaredFields();
+            for (Field field : declaredFields) {
+                if (field.isAnnotationPresent(Autowired.class)) {
+                    Autowired annotation = field.getAnnotation(Autowired.class);
+                    //key
+                    String key = annotation.value();
+                    String name = field.getType().getCanonicalName();
+                    if("java.lang.String".equals(name)){
+                        String value = intent.getStringExtra(key);
+                        field.setAccessible(true);
+                        try {
+                            field.set(activity, value);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }else if(...){
+                        //...
+                    }
+                }
+            }
+        }
+    }
+```
 
 
 
