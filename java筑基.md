@@ -274,9 +274,10 @@ Retention （级别小->大）
         }
     }
 
-    static class AutowiredUtils{
-        public static void init(Activity activity){
+    static class AutowiredUtils {
+        public static void init(Activity activity) {
             Intent intent = activity.getIntent();
+            Bundle bundle = intent.getExtras();
             Class<? extends Activity> activityClass = activity.getClass();
             Field[] declaredFields = activityClass.getDeclaredFields();
             for (Field field : declaredFields) {
@@ -284,17 +285,20 @@ Retention （级别小->大）
                     Autowired annotation = field.getAnnotation(Autowired.class);
                     //key
                     String key = annotation.value();
-                    String name = field.getType().getCanonicalName();
-                    if("java.lang.String".equals(name)){
-                        String value = intent.getStringExtra(key);
-                        field.setAccessible(true);
-                        try {
-                            field.set(activity, value);
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }else if(...){
-                        //...
+                    Class<?> componentType = field.getType().getComponentType();
+                    Object value = bundle.get(key);
+                    //当前属性是数组并且是 Parcelable（子类）数组 (Parcelable数组类型不能直接设置，其他的都可以)
+                    if (field.getType().isArray() && Parcelable.class.isAssignableFrom(componentType)) {
+                        Object[] objects = (Object[]) value;
+                        //创建对应类型的数组并由objs拷贝
+                        Arrays.copyOf(objects, objects.length, (Class<? extends Object[]>) field.getType());
+                        value = objects;
+                    }
+                    field.setAccessible(true);
+                    try {
+                        field.set(activity, value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
                     }
                 }
             }
