@@ -112,7 +112,7 @@ public <T> void test4_1(List<? super Number> list){
 
 
 
-# 2 注解
+# 2 注解（打标记）
 
 元注解： 注解上的注解 （@Target- 哪些地方/  @Retention - 保留在哪个阶段）
 
@@ -264,6 +264,8 @@ Retention （级别小->大）
         String v2;
         @Autowired("key3")
         boolean v3;
+        @Autowired("key4")
+        UserParcelable[] v4;  //数组 并且 是 Parcelable（子类）数组
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -305,6 +307,95 @@ Retention （级别小->大）
         }
     }
 ```
+
+
+
+## 2.2 手写retrofit
+
+代理模式：
+
+- 静态代理
+
+  网络请求--------**代理对象**（隔离层，统一抽象方法get/post...）-------封装层（volley）
+
+  ​															                                             -------封装层（okhttp）
+
+  缺点：多个代理对象
+
+- 动态代理
+
+  同一个代理对象，处理很多功能。
+
+```java
+public class TestProxy {
+    interface Fruit{
+        void eat(String name);
+    }
+    interface Fruit2{
+        void eat2(String name);
+    }
+    static class Orange implements Fruit{
+        @Override
+        public void eat(String name) {
+            System.out.println(name + "  eat  Orange");
+        }
+    }
+    static class Apple implements Fruit{
+        @Override
+        public void eat(String name) {
+            System.out.println(name + "  eat  Apple");
+        }
+    }
+
+    static class FruitClient {
+        public void printFruit(Fruit fruit){
+
+        }
+    }
+
+    public static void testProxy(){
+        final Orange orange = new Orange();
+        //代理对象
+        Object instance = Proxy.newProxyInstance(
+                TestProxy.class.getClassLoader(),
+                new Class[]{Fruit.class, Fruit2.class},  //多个接口
+                new InvocationHandler() {
+            @Override
+            public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+                System.out.println("11111");
+                Object invoke = method.invoke(orange, objects[0]);  //代理对象持有对象
+                System.out.println("22222");
+                return invoke;
+            }
+        });
+        Fruit fruit = (Fruit) instance;
+        fruit.eat("zdf");
+        //
+//        Apple apple = (Apple) instance;
+//        apple.eat("zdf");
+    }
+
+    public static void main(String[] args) {
+        TestProxy.testProxy();
+    }
+}
+```
+
+
+
+**动态代理+注解+反射**
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
