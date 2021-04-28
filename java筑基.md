@@ -387,15 +387,188 @@ public class TestProxy {
 
 
 
+```java
+public class XRetrofit {
+    final Map<Method, ServiceMethod> serviceMethodCache = new ConcurrentHashMap();
+    Call.Factory callFactory;
+    HttpUrl baseUrl;
+
+    public XRetrofit(HttpUrl httpUrl, Call.Factory factory) {
+        this.callFactory = factory;
+        this.baseUrl = httpUrl;
+    }
+
+    /**
+     * WeatherApi weatherApi = retrofit.create(WeatherApi.class);
+     *
+     */
+    public <T> T create(Class<T> cls){
+        /**
+         * 生成一个代理类，代理接口对应的方法执行，
+         * 如发出某个请求，对应的请求参数需要解析出来，最终发出请求。并返回
+         */
+        Object instance = Proxy.newProxyInstance(cls.getClassLoader(),
+                new Class[]{cls}, new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+                        /**
+                         * method 就是接口中的方法
+                         * 解析方法上所有的注解信息
+                         */
+                        ServiceMethod serviceMethod = loadServiceMethod(method);
+                        //执行被代理类的对应方法，及相应的参数
+                        return serviceMethod.invoke(objects);
+                    }
+                });
+        return (T) instance;
+    }
+
+    /**
+     * 缓存，避免每次读取方法上的参数注解等
+     * @param method
+     */
+    private ServiceMethod loadServiceMethod(Method method) {
+        ServiceMethod serviceMethod = serviceMethodCache.get(method);
+        if (serviceMethod != null) {
+            return serviceMethod;
+        }
+        synchronized (serviceMethodCache){
+            serviceMethod = serviceMethodCache.get(method);
+            if (serviceMethod == null) {
+                serviceMethod = new ServiceMethod
+                        .Builder()
+                        .init(this, method)
+                        .build();
+                serviceMethodCache.put(method, serviceMethod);
+            }
+        }
+        return serviceMethod;
+    }
+
+    /**
+     * 构建者模式，将一个复杂对象构建分离。
+     */
+    public static final class Builder{
+        HttpUrl httpUrl;
+        Call.Factory factory;
+        public Builder baseUrl(String url){
+            httpUrl = HttpUrl.get(url);
+            return this;
+        }
+
+        public Builder callFactory(Call.Factory factory){
+            this.factory = factory;
+            return this;
+        }
+
+        public XRetrofit build(){
+            if(httpUrl == null){
+                throw  new IllegalStateException("xxxx");
+            }
+            //构建默认请求
+            if(this.factory == null){
+                this.factory = new OkHttpClient();
+            }
+            return new XRetrofit(httpUrl, factory);
+        }
+    }
+}
+```
 
 
 
 
 
+# 3 线程/进程
+
+>  线程存在于操作系统中，不仅仅是Java
+
+- 进程：系统调用的最小单位
+
+  分配 cpu/内存/磁盘io
+
+- 线程：cpu调用的最小单位
+
+  内核数与线程数： 一对一 （逻辑处理器，2倍）
+
+  RR调度： cpu事件片轮转 机制
 
 
 
+- 并行（各自执行）：同时运行的任务数
+- 并发（交替执行）：单位**时间**内，处理的任务数
 
+os限制： linux 分配1000个线程， windows 分配2000个    (线程池来控制线程数量)
+
+句柄： 系统分配了一段连续的内存空间， 指向这个内存空间的叫做句柄.
+
+
+
+> jdk 线程时协作式， 不是强制式
+>
+> **Thread.currentThread()  : 获取当前线程**
+
+
+
+创建线程：一种：Thread； 二种：Runnable
+
+- stop() （过时）: 不建议使用，方式野蛮，直接停止线程操作。如写文件时，中途停止。文件未写完整。
+
+- interrupt()（推荐）: 标识线程中断，标识位， 实际不一定是停止线程。
+- isInterrupted(): 判断是否停止  while(isInterrupted()){...} ，  **不建议使用** 设置boolean 标识 while(cancel){...}
+- interrupted(): 判断是否停止 （会修改标识为 true）
+
+
+
+sleep捕获异常，需要interupt()， 外部不会让线程中断。
+
+```java
+static class T extends Thread{
+        @Override
+        public void run() {
+            System.out.println("run...2-1 "+ isInterrupted());
+            //没有打断
+            while (!isInterrupted()){
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    //需要打断，否则while会一直执行下去
+                    interrupt();
+                    System.out.println("run...sleep   "+ isInterrupted());
+                }
+                System.out.println("run...1   "+ isInterrupted());
+            }
+            System.out.println("run...2-2   "+ isInterrupted());
+        }
+    }
+```
+
+
+
+- run()    : 主线程执行
+
+- start()  : 启动一个子线程执行
+
+- yield():  从cpu中让出执行权，转为就绪状态。    不会让出锁
+
+- join():    获取执行权，  但是有顺序的执行（串行）   （如何让2个线程有顺序的执行？使用join）
+
+- setPriority():  线程优先级
+
+- setDaemon():  设置为守护线程。  **主线程完毕后，守护线程停止**
+
+  主线程外， 都是守护线程。
+
+
+
+线程间的共享
+
+ 多个线程对同一个资源访问 ===> 加锁 (方法加锁，对象加锁)
+
+静态方法上内加锁===>  
+
+注： 相同锁， 多线程串行；  锁不同，多线程并行
 
 
 
