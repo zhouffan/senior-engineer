@@ -560,7 +560,11 @@ static class T extends Thread{
 
   主线程外， 都是守护线程。
 
+  
 
+  **线程状态交互：**
+
+   ![img](https://github.com/zhouffan/senior-engineer/raw/master/image/%E7%BA%BF%E7%A8%8B%E4%BA%A4%E6%9B%BF%E6%89%A7%E8%A1%8C.png)
 
 线程间的共享
 
