@@ -489,9 +489,9 @@ public class XRetrofit {
 
 - 线程：cpu调用的最小单位
 
-  内核数与线程数： 一对一 （逻辑处理器，2倍）
+  内核数与线程数： 一比一 （逻辑处理器，2倍）
 
-  RR调度： cpu事件片轮转 机制
+  RR调度： cpu时间片轮转 机制
 
 
 
@@ -573,6 +573,105 @@ static class T extends Thread{
 静态方法上内加锁===>  
 
 注： 相同锁， 多线程串行；  锁不同，多线程并行
+
+
+
+
+
+>  **volatile：** 最轻量的线程同步机制，可见性。（旧值**变成**新值时，马上被其他线程看到） ，不能保证线程安全。  **一写多读**的场景下使用。
+>
+> **ThreadLocal:** 每个线程都有遍历的副本，线程隔离。   拥有一个线程独有的   TheadLocalMap （内含Entry[]）
+>
+> ​						threadLocal使用后， 不remove，会发生内存泄漏 。
+>
+> ​						没有使用好，也会线程不安全。
+
+
+
+
+
+
+
+- 强引用
+- 软引用：softReference      gc时， 内存不足时， 才会回收。
+- 弱引用：weakReference     gc时，不管内存是否充足，都会回收。
+- 虚引用： 
+
+
+
+线程之间的协作：
+
+- wait()      : object的方法，  写在syn 同步块或者方法中。 //释放锁
+- notify()/ **notifyAll()**    : object的方法， 写在syn 同步块或者方法中
+
+```java
+//等待
+syn(对象){
+	while(条件不满足){
+		对象.wait()  //释放锁
+	}
+	//业务
+}
+//通知
+syn(对象){
+	//业务， 改变条件
+	对象.notify()/notifyAll()
+}
+```
+
+
+
+object o = new object()
+
+o = null;   (代表栈指向空，但是对应的堆对象还存在，等待gc回收)
+
+
+
+> fork/join:  分而治之 ， 大任务拆分(fork)成若干小任务， 再将小任务的直接结果汇总（join）
+
+
+
+CAS （compare and swap） ： 原子操作 （不可分，要么全部做，要么一个都不做）
+
+原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：死循环。但性能高）
+
+get变量值（旧值）--->计算后得到新值---> compare内存中变量值和旧值---->如果相等-----旧值swap为新值
+
+​																														   ---->如果不想等，从头再来一次
+
+- ABA问题： 中间已经改过了。
+- 开销问题：不停重试。
+- 只能保证一个共享变量的原子操作。  （如果内部有个变量修改，就需要syn）
+
+jdk中相关原子操作类：
+
+- 更新基本类型类： AtomicBoolean, AtomicInteger, AtomicLong
+- 更新数组类： AtomicIntegerArray， AtmoIntegerArray, AtomicReferenceArray
+- 更新引用类型：AtomicReference, AtomicMarkableReference, AtomicStampedReference
+
+syn： （一个线程操作，其他线程都得等待）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
