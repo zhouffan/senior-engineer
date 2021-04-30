@@ -239,7 +239,7 @@ Retention （级别小->大）
 ```
 
 ```java
-		//实例一： 实现页面跳转，跳转后注解获取参数
+	//实例一： 实现页面跳转，跳转后注解获取参数
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     @interface Autowired{
@@ -479,7 +479,7 @@ public class XRetrofit {
 
 
 
-# 3 线程/进程
+# 3 进程/线程(并发)
 
 >  线程存在于操作系统中，不仅仅是Java
 
@@ -498,13 +498,13 @@ public class XRetrofit {
 - 并行（各自执行）：同时运行的任务数
 - 并发（交替执行）：单位**时间**内，处理的任务数
 
-os限制： linux 分配1000个线程， windows 分配2000个    (线程池来控制线程数量)
+os限制： linux 分配1000个线程， windows 分配2000个    (线程池来控制线程数量)。
 
-句柄： 系统分配了一段连续的内存空间， 指向这个内存空间的叫做句柄.
+句柄： 系统分配了一段连续的内存空间， 指向这个内存空间的叫做句柄。
 
 
 
-> jdk 线程时协作式， 不是强制式
+> jdk 线程是协作式， 不是强制式
 >
 > **Thread.currentThread()  : 获取当前线程**
 
@@ -512,7 +512,7 @@ os限制： linux 分配1000个线程， windows 分配2000个    (线程池来�
 
 创建线程：一种：Thread； 二种：Runnable
 
-- stop() （过时）: 不建议使用，方式野蛮，直接停止线程操作。如写文件时，中途停止。文件未写完整。
+- stop() （过时）: 不建议使用，方式野蛮，直接停止线程操作。如写文件时，中途停止，文件未写完整。
 
 - interrupt()（推荐）: 标识线程中断，标识位， 实际不一定是停止线程。
 - isInterrupted(): 判断是否停止  while(isInterrupted()){...} ，  **不建议使用** 设置boolean 标识 while(cancel){...}
@@ -550,15 +550,15 @@ static class T extends Thread{
 
 - start()  : 启动一个子线程执行
 
-- yield():  从cpu中让出执行权，转为就绪状态。    不会让出锁
+- yield():  从cpu中让出执行权，转为就绪状态。    **不会让出锁**
 
 - join():    获取执行权，  但是有顺序的执行（串行）   （如何让2个线程有顺序的执行？使用join）
 
 - setPriority():  线程优先级
 
-- setDaemon():  设置为守护线程。  **主线程完毕后，守护线程停止**
+- setDaemon():  设置为守护线程。  **当前线程完毕后，守护线程停止**
 
-  主线程外， 都是守护线程。
+  当前线程外， 设置了setDaemon的线程 都是守护线程。
 
   
 
@@ -575,6 +575,11 @@ static class T extends Thread{
 注： 相同锁， 多线程串行；  锁不同，多线程并行
 
 
+
+**死锁：**
+
+- 多个操作者（线程）
+- 争夺多个资源
 
 
 
@@ -631,19 +636,29 @@ o = null;   (代表栈指向空，但是对应的堆对象还存在，等待gc�
 
 
 
-CAS （compare and swap） ： 原子操作 （不可分，要么全部做，要么一个都不做）
+原子操作： 不可分，要么全部做，要么一个都不做
 
-原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：死循环。但性能高）
+**CAS （compare and swap）** （无锁算法）
 
-get变量值（旧值）--->计算后得到新值---> compare内存中变量值和旧值---->如果相等-----旧值swap为新值
+-  **比较再交换**，java.util.concurrent.*,其下面的类直接或者间接使用CAS算法实现，区别synchronouse同步锁的一种乐观锁。 
 
-​																														   ---->如果不想等，从头再来一次
+- CPU指令级的操作，只有一步原子操作，非常快。避免了请求操作系统来裁定锁的问题，直接在CPU执行。
+
+- 原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：死循环。但性能高）。
+
+- get变量值（旧值）--->计算后得到新值---> compare内存中变量值和旧值---->如果相等-----旧值swap为新值
+
+  ​																														   ---->如果不想等，从头再来一次
+
+缺点：
 
 - ABA问题： 中间已经改过了。
 - 开销问题：不停重试。
 - 只能保证一个共享变量的原子操作。  （如果内部有个变量修改，就需要syn）
 
-jdk中相关原子操作类：
+
+
+JDK中相关原子操作类（java.util.concurrent.atomic，提供一种高效的CAS操作）：
 
 - 更新基本类型类： AtomicBoolean, AtomicInteger, AtomicLong
 - 更新数组类： AtomicIntegerArray， AtmoIntegerArray, AtomicReferenceArray
@@ -653,11 +668,22 @@ syn： （一个线程操作，其他线程都得等待）
 
 
 
+**ConcurrentHashMap** （线程安全，解决并发问题）
+
+- jdk 1.8以前： Segment+ReentrantLock
+- jdk 1.8以后： CAS+Synchronized
+
+> 1.8 在 1.7 的数据结构上做了大的改动，采用红黑树之后可以保证查询效率（`O(logn)`），甚至取消了 ReentrantLock 改为了 synchronized，这样可以看出在新版的 JDK 中对 synchronized 优化是很到位的。
 
 
 
 
 
+**解决多线程并发问题：**
+
+- 加synchronized 。锁机制
+- threadLocal。副本，4个方法，get/set/remove/initialValue
+- concurrent下的原子操作类。 concuuurentHashMap，AtomicBoolean...
 
 
 
