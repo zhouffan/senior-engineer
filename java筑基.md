@@ -646,9 +646,19 @@ o = null;   (代表栈指向空，但是对应的堆对象还存在，等待gc�
 
 - 原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：死循环。但性能高）。
 
-- get变量值（旧值）--->计算后得到新值---> compare内存中变量值和旧值---->如果相等-----旧值swap为新值
+- get变量值（旧值）--->计算后得到新值---> compare**内存中变量值**和**旧值**---->如果相等-----旧值swap为新值
 
-  ​																														   ---->如果不想等，从头再来一次
+  ​																														   ---->如果不相等，从头再来一次
+  
+  ​																				    		(如果一个线程一直不相等，则最后一次也会相等)
+
+> eg:  count++ 多个线程来操作  A：0-->1
+>
+> CAS接收三个参数（1. count的内存地址; 2. 期望的值(旧值，count 0); 3. 新值（1））
+>
+> 当执行时，**比较**和**交换**是不能被外部线程打断： 原子性
+
+
 
 缺点：
 
@@ -689,11 +699,87 @@ syn： （一个线程操作，其他线程都得等待）
 
 
 
+**阻塞队列**
+
+- 队列满了：再添加，会阻塞
+
+- 队列空了：去取，会阻塞
+
+BlockingQueue： 阻塞方法（put()/ take()），有阻塞方法也有非阻塞方法。
+
+- 线程take()取值时，如果取不到值，会阻塞在那里。
+- ArrayBlockingQueue : 由数组构成的有界阻塞
+- LinkedBlockingQueue：由链表构成的有界阻塞
+- PriorityBlockingQueue：支持优先级排序构成的无界阻塞
+- DelayQueue：支持优先级排序构成的无界阻塞  (有效时间， 缓存时间控制)
+- ...
 
 
 
+生产者/消费者： 中间建立一个容器，生产者和消费者各自执行各自
 
 
+
+**线程池原理**
+
+一个线程所需要的资源时间
+
+- 创建时间
+- 任务执行时间   （线程池就只包含了该时间，不需要重复创建/销毁）
+- 销毁时间
+
+
+
+Exceutor--ExecutorService--ThreadPoolExecutor 
+
+```java
+ThreadPoolExecutor(
+  int corePoolSize,   //核心线程池数量
+  int maximumPoolSize,  //最大线程池数量
+  long keepAliveTime,  //核心线程 保活时间
+  TimeUnit unit,  //保活时间单位
+  BlockingQueue<Runnable> workQueue, //阻塞队列， 超过核心数量后，加入到该队列中
+  ThreadFactory threadFactory,  //
+  RejectedExecutionHandler handler // 超过最大线程池数量，拒绝
+)
+```
+
+> 怎么让线程一直进行？
+>
+> 当前线程执行run方法中，可以使用BlockingQueue阻塞队列进行 take()阻塞
+
+
+
+![img](https://github.com/zhouffan/senior-engineer/raw/master/image/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png)
+
+任务特性
+
+- cpu密集型：cpu纯计算， 从内存中取出来计算。 线程数：不要超过cpu核心数+1。   **速度快**  
+
+  ```java
+  Runtime.getRuntime().availableProcessors()
+  ```
+
+- io密集型：网络通信/ 读写磁盘。    线程数：机器的cpu核心数*2        **速度慢**
+
+- 混合型：
+
+
+
+**摘自《Jeff Dean在Google全体工程大会的报告》**
+
+| 操作                         | 响应时间 |
+| ---------------------------- | -------- |
+| 打开一个站点                 | 几秒     |
+| 数据库查询一条记录（有索引） | 十几毫秒 |
+| 1.6G的CPU执行一条指令        | 0.6纳秒  |
+| 从机械磁盘顺序读取1M数据     | 2-10毫秒 |
+| 从SSD磁盘顺序读取1M数据      | 0.3毫秒  |
+| 从内存连续读取1M数据         | 250微秒  |
+| CPU读取一次内存              | 100纳秒  |
+| 1G网卡，网络传输2Kb数据      | 20微秒   |
+
+1秒=1000毫秒      1毫秒=1000微秒         1微秒=1000纳秒
 
 
 
