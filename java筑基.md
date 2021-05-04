@@ -585,11 +585,17 @@ static class T extends Thread{
 
 >  **volatile：** 最轻量的线程同步机制，可见性。（旧值**变成**新值时，马上被其他线程看到） ，不能保证线程安全。  **一写多读**的场景下使用。
 >
-> **ThreadLocal:** 每个线程都有遍历的副本，线程隔离。   拥有一个线程独有的   TheadLocalMap （内含Entry[]）
+>  ​	- 可见性：对一个volatile变量的读，能看到其他线程对这个变量最后的写入。（强制刷新值同步回主内存，强制其他读线程去读。**没有写的情况下，是各自工作线程从主内存中拷贝一个副本并进行各自操作**）
 >
-> ​						threadLocal使用后， 不remove，会发生内存泄漏 。
+>  ​	- 只能保证可见性，不能保持**原子性**（复合操作（自增）。 要么一起成功，要么都不成功）
 >
-> ​						没有使用好，也会线程不安全。
+>  **synchronized**： 独占锁， 保证 **可见性+原子性**
+>
+>  **ThreadLocal:** 每个线程都有遍历的副本，线程隔离。   拥有一个线程独有的   TheadLocalMap （内含Entry[]）
+>
+>  ​						threadLocal使用后， 不remove，会发生内存泄漏 。
+>
+>  ​						没有使用好，也会线程不安全。
 
 
 
@@ -694,6 +700,7 @@ syn： （一个线程操作，其他线程都得等待）
 - 加synchronized 。锁机制
 - threadLocal。副本，4个方法，get/set/remove/initialValue
 - concurrent下的原子操作类。 concuuurentHashMap，AtomicBoolean...
+- **volatile+CAS操作**：替换synchronized
 
 
 
@@ -780,6 +787,47 @@ ThreadPoolExecutor(
 | 1G网卡，网络传输2Kb数据      | 20微秒   |
 
 1秒=1000毫秒      1毫秒=1000微秒         1微秒=1000纳秒
+
+
+
+
+
+AQS：AbstractQueuedSynchronizer  抽象队列同步器   （state锁状态值）
+
+CLH队列锁：内部一个state状态值。包含模版方法模式。     同步工具类的内部类来继承AQS
+
+> 设计模式：模版方法模式
+>
+> doSomthing(){
+>
+> ​	method1();
+>
+> ​	method2();
+>
+> ​	...
+>
+> }
+>
+> abstract public void method1();
+
+
+
+非公平锁：不排队 拿锁。  抢占锁
+
+
+
+java内存模型： JMM
+
+java线程从主内存中拷贝一个副本到各自的工作内存中进行相应操作。
+
+volatile的实现原理：该修饰的变量进行写时，会使用cpu提供的Lock前缀指令
+
+- 将当前处理器缓存行的数据写回系统内存
+- 这个写回操作会使其他cpu缓存了该内存地址的数据无效。重新来读取。
+
+
+
+
 
 
 
