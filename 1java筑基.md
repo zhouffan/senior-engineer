@@ -481,6 +481,10 @@ public class XRetrofit {
 
 # 3 进程/线程(并发)
 
+## 3.1 线程基础
+
+
+
 >  线程存在于操作系统中，不仅仅是Java
 
 - 进程：系统调用的最小单位
@@ -599,9 +603,43 @@ static class T extends Thread{
 
 
 
+**可见性与原子性**
+
+- **可见性：**指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。
+
+  由于线程对变量的所有操作都必须在**工作内存中进行**，而**不能直接读写主内存中**的变量，那么对于共享变量V，它们首先是在自己的工作内存，之后再**同步到主内存**。可是并**不会及时**的刷到主存中，而是会有一定时间差。很明显，这个时候线程 A 对变量 V 的操作对于线程 B 而言就不具备可见性了 。
+
+  要解决共享对象可见性这个问题，我们可以使用**volatile关键字**或者是**加锁**。
+
+- **原子性：**即一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。
+
+  - **“时间片”**：CPU资源的分配都是**以线程为单位**的，并且是**分时调用**，操作系统允许某个进程执行一小段时间，例如 50 毫秒，过了 50 毫秒操作系统就会**重新选择一个进程**来执行（我们称为“任务切换”），这个 50 毫秒称为**“时间片”**。
+
+  - **线程切换问题原理**：线程切换为什么会带来bug呢？因为操作系统做任务切换，可以发生在**任何一条CPU 指令执行完**！，CPU 指令，而不是高级语言里的一条语句。
+
+    ```
+    count++;  //一条java语句，对应多条 cpu指令
+    ```
 
 
 
+**volatile：**把对volatile变量的**单个**读/写，看成是使用同一个**锁**对这些**单个读/写**操作做了同步
+
+- 可见性：对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入。
+
+- 原子性：对任意**单个**volatile变量的读/写具有原子性。能保证执行完**及时把变量刷到主内存**中
+- 但对于count++这种非原子性、多指令的情况。由于线程切换，线程A刚把count=0加载到工作内存，线程B也拿到0（执行++ =>1），这样就会导致线程A和B执行完的结果都是1，都写到主内存中，主内存的值**还是1**不是2
+
+- **原理：**该修饰的变量进行写时，会使用cpu提供的Lock前缀指令，可以理解为CPU指令级的一种锁
+
+  - 将当前处理器缓存行的数据写回系统内存
+  - 这个写回操作会使其他cpu缓存了**该内存地址的数据无效**。重新来读取。
+
+  
+
+
+
+**引用分类**
 
 - 强引用
 - 软引用：softReference      gc时， 内存不足时， 才会回收。
@@ -642,21 +680,40 @@ o = null;   (代表栈指向空，但是对应的堆对象还存在，等待gc�
 
 
 
-原子操作： 不可分，要么全部做，要么一个都不做
 
-## **CAS （compare and swap）** （无锁算法）
 
--  **比较再交换**，java.util.concurrent.*,其下面的类直接或者间接使用CAS算法实现，区别synchronouse同步锁的一种乐观锁。 
+## 3.2 CAS （compare and swap）（无锁算法）
 
-- CPU指令级的操作，只有一步原子操作，非常快。避免了请求操作系统来裁定锁的问题，直接在CPU执行。
 
-- 原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：死循环。但性能高）。
+
+> 原子操作： 不可分，要么全部做，要么一个都不做
+
+
+
+- 目的：实现原子操作（synchronized也能实现原子操作）
+
+  synchronized缺点：
+
+  - 被阻塞的线程优先级很高很重要怎么办？
+  - 获得锁的线程一直不释放锁怎么办？
+  - 如果有大量的线程来竞争资源，那CPU将会花费大量的时间和资源来处理这些竞争。会出现如死锁等情况。
+  - **锁机制**是一种比较粗糙，粒度比较大的机制，相对于像计数器这样的需求有点儿过于笨重。
+
+-  释义1：**比较再交换**，java.util.concurrent.*,其下面的类直接或者间接使用CAS算法实现，区别synchronouse同步锁的一种乐观锁。 
+
+- 释义2：CPU指令级的操作，只有一步原子操作，非常快。避免了请求操作系统来裁定锁的问题，直接在CPU执行。
+
+- 原理： 利用现代处理器都支持的CAS的指令，  **循环**这个指令，直到成功为止。  （自旋：类似死循环，长时间不成功会带来cpu高开销）。
 
 - get变量值（旧值）--->计算后得到新值---> compare**内存中变量值**和**旧值**---->如果相等-----旧值swap为新值
 
   ​																														   ---->如果不相等，从头再来一次
   
   ​																				    		(如果一个线程一直不相等，则最后一次也会相等)
+  
+-  **思想：**获取当前变量最新值A（预期值），然后进行CAS操作。此时如果内存中变量的值V（内存值V）等于预期值A，**说明没有被其他线程修改过**，我就把变量值改成B（更新值）；如果不是A，便不再修改。（被其他线程修改过，则重新循环）
+
+
 
 > eg:  count++ 多个线程来操作  A：0-->1
 >
@@ -712,7 +769,7 @@ syn： （一个线程操作，其他线程都得等待）
 
 - 队列空了：去取，会阻塞
 
-BlockingQueue： 阻塞方法（put()/ take()），有阻塞方法也有非阻塞方法。
+**BlockingQueue**： 阻塞方法（put()/ take()），有阻塞方法也有非阻塞方法。
 
 - 线程take()取值时，如果取不到值，会阻塞在那里。
 - ArrayBlockingQueue : 由数组构成的有界阻塞
@@ -723,13 +780,35 @@ BlockingQueue： 阻塞方法（put()/ take()），有阻塞方法也有非阻�
 
 
 
-生产者/消费者： 中间建立一个容器，生产者和消费者各自执行各自
+生产者/消费者：
+
+-  **中间建立一个容器**（阻塞队列），生产者和消费者各自执行各自（**解决**生产者和消费者的**强耦合**问题）
+- 阻塞队列就相当于一个缓冲区，平衡生产者和消费者的处理能力。
 
 
 
-## **线程池原理**
+|   方法   | 抛出异常 | 返回值 | 一直阻塞 | 超时退出           |
+| :------: | -------- | ------ | -------- | ------------------ |
+| 插入方法 | add      | offer  | **put**  | offer(e,time,unit) |
+| 移除方法 | remove   | poll   | **take** | poll(time,unit)    |
+| 获取方法 | element  | peek   | -        | -                  |
 
-一个线程所需要的资源时间
+抛出异常：
+
+- 当队列满时，如果再往队列里插入元素，会抛出IllegalStateException（"Queuefull"）异常。
+- 当队列空时，从队列里获取元素会抛出NoSuchElementException异常。
+
+## 3.3 线程池原理
+
+**作用：**
+
+- 降低资源消耗。重复利用已创建的线程  降低线程**创建**和**销毁**造成的消耗。
+- 提高响应速度。只有执行时间（已创建线程的情况下）。
+- 提高线程的可管理性。统一分配、调优和监控。
+
+
+
+**一个线程所需要的资源时间**
 
 - 创建时间
 - 任务执行时间   （线程池就只包含了该时间，不需要重复创建/销毁）
@@ -742,14 +821,25 @@ Exceutor--ExecutorService--ThreadPoolExecutor
 ```java
 ThreadPoolExecutor(
   int corePoolSize,   //核心线程池数量
-  int maximumPoolSize,  //最大线程池数量
+  int maximumPoolSize,  //线程池中允许的最大线程数。如果当前阻塞队列满了，且继续提交任务，则创建新的线程执行任务，前提是当前线程数小于maximumPoolSize （立即执行）
   long keepAliveTime,  //核心线程 保活时间
   TimeUnit unit,  //保活时间单位
   BlockingQueue<Runnable> workQueue, //阻塞队列， 超过核心数量后，加入到该队列中
-  ThreadFactory threadFactory,  //
+  ThreadFactory threadFactory,  //设置，线程名、守护线程。Executors静态工厂里默认的threadFactory，线程的命名规则是“pool-数字-thread-数字”。
   RejectedExecutionHandler handler // 超过最大线程池数量，拒绝
 )
+  //eg: 核心线程数 3， 最大线程数 6， 阻塞队列 10
+  //1、2、3（核心线程数），4--13（阻塞队列），14、15、16 （最大线程数 6-3=3）的执行顺序，1、2、3、14、15、16、4--13
 ```
+
+**线程池工作机制**
+
+- 如果当前运行的线程少于corePoolSize，则**创建新线程**来执行任务（注意，执行这一步骤需要获取全局锁）
+- 如果运行的线程等于或多于corePoolSize，则将任务加入BlockingQueue。
+- 如果无法将任务加入BlockingQueue（队列已满），则**创建新的线程**来处理任务。
+- 如果创建新线程将使当前运行的线程超出maximumPoolSize，任务将被拒绝，并调用RejectedExecutionHandler.rejectedExecution()方法。
+
+
 
 > 怎么让线程一直进行？
 >
@@ -759,7 +849,7 @@ ThreadPoolExecutor(
 
 ![img](https://github.com/zhouffan/senior-engineer/raw/master/image/%E7%BA%BF%E7%A8%8B%E6%B1%A0.png)
 
-任务特性
+**任务特性**
 
 - cpu密集型：cpu纯计算， 从内存中取出来计算。 线程数：不要超过cpu核心数+1。   **速度快**  
 
@@ -775,16 +865,16 @@ ThreadPoolExecutor(
 
 **摘自《Jeff Dean在Google全体工程大会的报告》**
 
-| 操作                         | 响应时间 |
-| ---------------------------- | -------- |
-| 打开一个站点                 | 几秒     |
-| 数据库查询一条记录（有索引） | 十几毫秒 |
-| 1.6G的CPU执行一条指令        | 0.6纳秒  |
-| 从机械磁盘顺序读取1M数据     | 2-10毫秒 |
-| 从SSD磁盘顺序读取1M数据      | 0.3毫秒  |
-| 从内存连续读取1M数据         | 250微秒  |
-| CPU读取一次内存              | 100纳秒  |
-| 1G网卡，网络传输2Kb数据      | 20微秒   |
+| 操作                         | 响应时间    |
+| ---------------------------- | ----------- |
+| 打开一个站点                 | 几秒        |
+| 数据库查询一条记录（有索引） | *十几毫秒*  |
+| 1.6G的CPU执行一条指令        | **0.6纳秒** |
+| 从机械磁盘顺序读取1M数据     | *2-10毫秒*  |
+| 从SSD磁盘顺序读取1M数据      | *0.3毫秒*   |
+| 从内存连续读取1M数据         | 250微秒     |
+| CPU读取一次内存              | **100纳秒** |
+| 1G网卡，网络传输2Kb数据      | 20微秒      |
 
 1秒=1000毫秒      1毫秒=1000微秒         1微秒=1000纳秒
 
@@ -792,9 +882,12 @@ ThreadPoolExecutor(
 
 
 
-AQS：AbstractQueuedSynchronizer  抽象队列同步器   （state锁状态值）
+**AQS：AbstractQueuedSynchronizer  抽象队列同步器**   （state锁状态值）
 
-- CLH队列锁：基于链表的自旋锁。
+- **作用：**用来构建锁或者其他同步组件的**基础框架**。使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作。
+- **使用：**继承AQS，管理同步状态值state
+
+- CLH队列锁（Craig, Landin, and Hagersten (CLH) locks）：基于链表的自旋锁。
 
 - 内部一个state状态值。包含模版方法模式。     同步工具类的内部类来继承AQS
 
@@ -812,6 +905,8 @@ AQS：AbstractQueuedSynchronizer  抽象队列同步器   （state锁状态值�
 >
 > abstract public void method1();
 
+**compareAndSetState**(int expect,int update)：使用CAS设置当前状态，该方法能够保证状态设置的原子性。 
+
 
 
 非公平锁：不排队 拿锁。  抢占锁
@@ -828,16 +923,17 @@ java内存模型： JMM
 
 java线程从主内存中拷贝一个副本到各自的工作内存中进行相应操作。
 
-volatile的实现原理：该修饰的变量进行写时，会使用cpu提供的Lock前缀指令
-
-- 将当前处理器缓存行的数据写回系统内存
-- 这个写回操作会使其他cpu缓存了该内存地址的数据无效。重新来读取。
 
 
+## 3.4 synchronized的实现原理
 
-## **synchronized的实现原理**
+**描述：**基于进入和退出Monitor对象来实现方法同步和代码块同步，都可以通过成对的MonitorEnter和MonitorExit指令来实现。常量池中多了ACC_SYNCHRONIZED标示符。
 
-优化：引入了偏向锁/轻量级锁/重量级锁，
+- JVM根据**该标示符**来实现方法的同步的：当方法被调用时，调用指令将会检查方法的 ACC_SYNCHRONIZED 访问标志是否被设置。
+- 如果设置了，执行线程将**先获取monitor**，获取成功之后才能执行方法体，方法执行完后**再释放monitor**。
+- 在方法执行期间，其他任何线程都**无法获得同一个**monitor对象。
+
+
 
 > javap -v xxxx.class  : 反编译class文件
 >
@@ -845,11 +941,11 @@ volatile的实现原理：该修饰的变量进行写时，会使用cpu提供的
 
 
 
-**不同锁比较**
+**锁的状态 比较**  （会随着竞争情况逐渐升级）
 
-- 偏向锁 ： 加锁/解锁不需要额外消耗，和非同步方法执行接近。适用于一个线程访问同步块
-
-- 轻量级锁：得不到锁会使用自旋消耗cpu，不会阻塞。 追求响应时间
+- 无锁状态
+- 偏向锁 ： 加锁/解锁不需要额外消耗，和非同步方法执行接近。适用于一个线程访问同步块（减少不必要的CAS操作）
+- 轻量级锁：由偏向锁**升级**来，偏向锁运行在一个线程进入同步块的情况下，当第二个线程加入锁争用的时候，偏向锁就会升级为轻量级锁。得不到锁会使用自旋消耗cpu，不会阻塞。 追求响应时间
 - 重量级锁：线程阻塞，响应时间慢。不实用自旋，不消耗cpu。  追求吞吐量
 
 
@@ -883,4 +979,64 @@ public class SingleObject {
 
 - wait ： 让出锁的执行权
 - 线程顺序执行（T1/T2/T3）：T3方法中调用t2.join，再调用t1.join。 依次从t1-->t2-->t3
+
+
+
+## 3.5 并发编程
+
+工具包：java.util.concurrent.*
+
+```java
+│  AbstractExecutorService.java
+│  ArrayBlockingQueue.java    //<-----
+│  BlockingDeque.java
+│  BlockingQueue.java
+│  ConcurrentHashMap.java    //<-----
+│  ConcurrentLinkedDeque.java
+│  ConcurrentMap.java
+│  DelayQueue.java
+│  Executor.java
+│  ExecutorService.java    //<-----
+│  ForkJoinPool.java
+│  ForkJoinWorkerThread.java
+│  Future.java
+│  LinkedBlockingDeque.java
+│  LinkedBlockingQueue.java
+│  RejectedExecutionException.java
+│  RejectedExecutionHandler.java
+│  ScheduledExecutorService.java
+│  ...
+│
+├─atomic
+│      AtomicBoolean.java     //<-----
+│      AtomicInteger.java    //<----- 
+│      AtomicIntegerArray.java    //<-----
+│      AtomicLong.java
+│      AtomicLongArray.java
+│      AtomicReference.java
+│      AtomicReferenceArray.java
+│      AtomicStampedReference.java
+│
+└─locks
+        AbstractOwnableSynchronizer.java
+        AbstractQueuedLongSynchronizer.java
+        AbstractQueuedSynchronizer.java    //<-----
+        Lock.java
+        ReadWriteLock.java
+        ReentrantLock.java
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
