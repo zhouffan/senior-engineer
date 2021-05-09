@@ -688,6 +688,8 @@ o = null;   (代表栈指向空，但是对应的堆对象还存在，等待gc�
 
 > 原子操作： 不可分，要么全部做，要么一个都不做
 
+**AtomicBoolean使用**: https://zhuanlan.zhihu.com/p/87614101
+
 
 
 - 目的：实现原子操作（synchronized也能实现原子操作）
