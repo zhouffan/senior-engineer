@@ -231,9 +231,31 @@ FileWriter 继承 OutputStreamWriter 依赖 FileOutputStream 依赖 File
 
 
 
+# 5.dex文件加密
+
+apk（dex1）------> dex1 AES加密后的新dex + dex2（壳） ---->  apk(重新装入dex)------>签名成新apk
 
 
 
+**dex文件**
+
+- header： 文件头
+- 索引区
+  - string_ids：字符串的索引
+  - type_ids：类型的索引
+  - proto_ids：方法原型的索引
+  - field_ids：域的索引
+  - method_ids：方法的索引
+- 数据区
+  - class_defs：类的定义区
+  - data：数据区
+  - link_data：链接数据区
+
+
+
+apk打包流程
+
+hook：通过反射，截取Android本身运行流程，**插入执行自己逻辑后**，再继续运行系统流程。
 
 
 
