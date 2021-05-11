@@ -132,13 +132,28 @@ RxJavaPlugins.setIoSchedulerHandler(new Function<Scheduler, Scheduler>() {
 - subscribeOn： 给上面的代码分配线线程
 - observeOn： 给下面的代码分配线程
 
+- 线程类型
+  - Schedulers.io()：重用空闲的线程，比newThread效率更高。
+  - Schedulers.newThread()：
+  - Schedulers.single()
+  - AndroidSchedulers.mainThread()：android主线程
+
 
 
 
 
 # 4.IO
 
-**装饰模式**  （功能增强）
+**装饰模式**  （功能增强----层层包裹增强）
+
+```java
+DataOutputStream out = new DataOutputStream( //基本类型数据的输出
+    new BufferedOutputStream( //具备缓存功能
+        new FileOutputStream( //向文件中写入数据
+            new File(file)));
+```
+
+
 
 **Component**（抽象接口）
 
@@ -182,13 +197,15 @@ byte b1 = dataInputStream.readByte();
 
 
 
-- 字节流：inputStream/outputStream
+- 字节流：inputStream/outputStream           字节流中的**行**也就是一个**字节符号**
 
 - 字符流：Reader/Writer.          **readLine()**
 
 
 
 **字符流：Reader/Writer**
+
+> 一个字符占用两个字节
 
 ```java
 //字节流 转换为 字符流
@@ -202,7 +219,14 @@ while ((str = bufferedReader.readLine()) != null){
 
 FileWriter 继承 OutputStreamWriter 依赖 FileOutputStream 依赖 File
 
-- 构造方法new(FileOutputStream(fileName))
+- 构造方法：OutputStreamWriter(OutputStream out); 
+- 构造方法：OutputStreamWriter(OutputStream out,String CharSetName); 
+
+```java
+BufferedWriter out=new BufferedWriter(new OutputStreamWriter(System.out)); 
+BufferedReader in= new BufferedReader(new InputStreamReader(System.in);
+String line=in.readLine();
+```
 
 
 
@@ -220,7 +244,9 @@ FileWriter 继承 OutputStreamWriter 依赖 FileOutputStream 依赖 File
 
  **FileChannel** （NIO 管道）
 
-- 操作速度更快
+- 配合ByteBuffer，操作速度更快
+
+- 批量/缓存的方式read/write
 
 - ```java
   FileInputStream inputStream;
@@ -229,7 +255,7 @@ FileWriter 继承 OutputStreamWriter 依赖 FileOutputStream 依赖 File
   FileChannel channel = inputStream.getChannel();//获取FileChannel
   ```
 
-
+- 效率 ≈  (Stream以byte数组方式)
 
 
 
