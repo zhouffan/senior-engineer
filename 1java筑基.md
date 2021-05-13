@@ -752,6 +752,33 @@ syn： （一个线程操作，其他线程都得等待）
 
 
 
+```java
+private static Lock No13 = new ReentrantLock();//第一个锁    (独占锁,可重入)
+private static Lock No14 = new ReentrantLock();//第二个锁
+
+//先尝试拿No13 锁，再尝试拿No14锁，No14锁没拿到，连同No13 锁一起释放掉
+private static void fisrtToSecond() throws InterruptedException {
+    String threadName = Thread.currentThread().getName(); 
+    while(true){
+        if(No13.tryLock()){
+            System.out.println(threadName +" get 13");
+            try{
+                if(No14.tryLock()){
+                    try{
+                        System.out.println(threadName +" get 14");
+                        break;
+                    }finally{
+                        No14.unlock();
+                    }
+                }
+            }finally {
+                No13.unlock();
+            }
+        }
+    }
+}
+```
+
 
 
 **解决多线程并发问题：**
@@ -832,6 +859,12 @@ ThreadPoolExecutor(
 )
   //eg: 核心线程数 3， 最大线程数 6， 阻塞队列 10
   //1、2、3（核心线程数），4--13（阻塞队列），14、15、16 （最大线程数 6-3=3）的执行顺序，1、2、3、14、15、16、4--13
+    
+    
+//创建方式
+ExecutorService executorService = Executors.newCachedThreadPool();
+ExecutorService executorService = Executors.newFixedThreadPool(3);
+ExecutorService executorService = Executors.newSingleThreadExecutor();
 ```
 
 **线程池工作机制**

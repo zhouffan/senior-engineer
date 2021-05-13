@@ -144,7 +144,7 @@ RxJavaPlugins.setIoSchedulerHandler(new Function<Scheduler, Scheduler>() {
 
 # 4.IO
 
-**装饰模式**  （功能增强----层层包裹增强）
+## 4.1 装饰模式 （功能增强----层层包裹增强）
 
 ```java
 DataOutputStream out = new DataOutputStream( //基本类型数据的输出
@@ -203,7 +203,7 @@ byte b1 = dataInputStream.readByte();
 
 
 
-**字符流：Reader/Writer**
+## 4.2 字符流：Reader/Writer
 
 > 一个字符占用两个字节
 
@@ -212,7 +212,7 @@ byte b1 = dataInputStream.readByte();
 BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(dataInputStream));
 String str = "";
-while ((str = bufferedReader.readLine()) != null){
+while ((str = bufferedReader.readLine()) != null){ <===============行的概念
   System.out.println(str);
 }
 ```
@@ -230,7 +230,21 @@ String line=in.readLine();
 
 
 
-**RandomAccessFile** （随机位置文件访问）
+## 4.3 BufferedInputStream
+
+- **缓冲区的输入流，默认缓冲区大小是8M**，**减少访问磁盘的次数**
+
+- ```
+  BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
+  byte[] b = new byte[1024];
+  while (bin.read(b, 0, b.length) != -1){
+  	String s = new String(b);
+  }
+  ```
+
+
+
+## 4.4 RandomAccessFile （随机位置文件访问）
 
 -  从指定位置开始读，seek（起始位置）
 
@@ -240,9 +254,17 @@ String line=in.readLine();
 
 - 既可以读也可以写。
 
+```java
+RandomAccessFile rsfWriter = new RandomAccessFile(file, "rw");
+//从10001开始存
+rsfWriter.seek(10000);
+```
 
 
- **FileChannel** （NIO 管道）
+
+
+
+## 4.5 FileChannel （NIO 管道）
 
 - 配合ByteBuffer，操作速度更快
 
@@ -256,6 +278,24 @@ String line=in.readLine();
   ```
 
 - 效率 ≈  (Stream以byte数组方式)
+
+```java
+Instant begin = Instant.now(); 
+RandomAccessFile randomAccessSourceFile = new RandomAccessFile(sourceFile, "r");
+RandomAccessFile randomAccessTargetFile = new RandomAccessFile(targetFile, "rw"); 
+FileChannel sourceFileChannel = randomAccessSourceFile.getChannel();
+FileChannel targetFileChannel = randomAccessTargetFile.getChannel();
+//ByteBuffer
+ByteBuffer byteBuffer = ByteBuffer.allocate(1024*1024);
+while(sourceFileChannel.read(byteBuffer) != -1) {
+    byteBuffer.flip();
+    targetFileChannel.write(byteBuffer);
+    byteBuffer.clear();
+}
+System.out.println("use time: " + Duration.between(begin, Instant.now()).toMillis());
+```
+
+
 
 # 5.dex文件加密
 
