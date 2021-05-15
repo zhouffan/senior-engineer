@@ -325,6 +325,71 @@ hook：通过反射，截取Android本身运行流程，**插入执行自己逻�
 
 
 
+# 6.Android虚拟机与类加载机制
+
+- JVM：执行class文件 （一个文件，一个class） 
+
+  基于栈的虚拟机
+
+- Dalvik/ART：执行的dex文件（一个文件，多个class）
+
+  基于寄存器的虚拟机：没有操作数栈，有很多虚拟寄存器（寄存器存放于运行时栈中，本质是数组） 。
+
+  相比指令更少，移动次数减少。 
+
+  
+
+>  ASM插件等价于javap命令：查看class字节码 （build里面看到的class文件实际上是反编译过来的）
+
+
+
+- Dalvik：执行dex字节码，解释执行。支持JIT**即时编译**（Just In Time），对热点代码进行编译或者优化。
+
+- ART：5.0以上默认使用，执行的是本地机器码。
+
+  ART引入了**预先编译机制**（Ahead Of Time），使用dex2oat工具编译应用。dex中字节码编译成本地机器码。
+
+  
+
+**Source Insight**：查看源码工具
+
+
+
+
+
+- BootClassLoader
+- PathClassLoader
+
+
+
+**双亲委托机制**：类加载器在加载类时，先将加载任务委托给父类加载器，依次递归，如果父类（系统中的类）完成加载任务，则成功返回；否则自己（自己项目中所写的类）去加载。
+
+- 避免重复加载：父类加载一次，子classLoader不会再次加载。
+- 安全性考虑：防止核心api库被篡改。
+
+
+
+android 热修复应用
+
+- application中初始化加载 补丁包（xxx.dex）。加载了新修复类，就不会加载原apk中的bug 类。
+
+
+
+
+
+**class打包dex**
+
+- dx --dex --output=output.dex input.jar
+- dx --dex --output=output.dex /com/xx/xx/A.class B.class
+
+
+
+
+
+**github查看代码插件**：octotree
+
+
+
 
 
 
