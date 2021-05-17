@@ -113,6 +113,72 @@ android 热修复应用
 
 
 
+# 3.Kotlin
+
+- Test.java -------Test.class-------JVM
+
+- Test.kt ----------Test.class-------JVM   (编译再编译，编译较慢)
+
+静态语言： 编译期已确定。（js动态解释语言）
+
+
+
+>  函数：一级公民。类外面也可以写
+
+
+
+for循环自定义标签， 嵌套循环停止  ：break@xxxx  (@xxxx for(...))
+
+
+
+- kotlin全部变量都**没有**默认值；
+
+- java中成员有默认值，方法内部没有默认值
+
+
+
+abstract  有open的特征
+
+
+
+黄色---object----单例
+
+- 嵌套类：
+- 内部类：inner   可以拿到外层的变量值
+
+
+
+@JvmStatic ：真静态方法
+
+
+
+> tools--->kotlin--->show kotlin byteCode   : 查看kotlin对应的Java代码
+
+```kotlin
+//形参里面 java类
+fun showClass(clazz: Class<JavaStudent>){}
+//全部都是kotlin
+fun showClass2(clazz:KClass<KtStudent>){}
+
+//调用
+showClass(JavaStudent::class.java) //kotlin 和java交互 （JavaStudent是java类）
+showClass2(KtStudent::class) //没有.java
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
