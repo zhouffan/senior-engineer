@@ -167,6 +167,96 @@ showClass2(KtStudent::class) //没有.java
 
 
 
+方法隔离（java不能调用kotlin）： ``
+
+```kotlin
+fun `test`(){
+  printf()
+}
+```
+
+
+
+高阶函数：省略接口
+
+```kotlin
+fun show(num: Int, back:(Boolean)->Unit){
+  num++;
+  if(num == 2){
+    back(true)
+  }else{
+    back(false)
+  }
+}
+//调用
+show(1){
+  println(it)
+}
+
+//show中直接调用方法  ::  (变成函数类型的对象，进行参数传递)
+fun myprintln(b: Boolean){
+  println(b)
+}
+//调用
+show(1, ::myprintln)
+```
+
+
+
+let/also/run...
+
+```kotlin
+//两个R  释义
+fun <R> sum(n1: Int, n2:Int, mm:(Int, Int)->R):R{
+  return mm(n1, n2)   //下面mm的返回值 true，  这里又返回给 sum函数
+}
+//调用
+var s = sum(10, 20){i1,i2->
+   println("$i1  $i2")
+   "xxx"
+   true    //最后一个返回的值，就是mm的返回值
+}
+println(s) //打印的是mm的返回值，  层层返回到最外层。
+```
+
+
+
+```kotlin
+//泛型 扩展函数
+fun <T> T.test(){
+  //...
+}
+fun main(){
+  val name = "a"
+  val age = 10
+  //调用
+  name.test()
+  age.test()
+}
+
+
+//'T.(String)->T'    给T增加匿名函数，返回是this    ===>对象本身，可以直接调用方法:xxx()
+fun <T, R> T.mylet2(mm: T.(String)->R):R{
+  return mm("")
+}
+//'(String)->T'      匿名函数，返回是it    ===>对象it，调用方法:it.xxx()
+fun <T, R> T.mylet(mm: (String)->R):R{
+  return mm("")
+}
+```
+
+
+
+**out**/in  (**? extend**/? supper : 1.上限下限；2. **能否获取/能否修改**)
+
+>  out/in：与上下限无关。
+
+- out =====>  不能修改，只能获取 （? extend）
+
+- in    =====>...
+
+
+
 
 
 
