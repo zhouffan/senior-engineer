@@ -261,6 +261,167 @@ fun <T, R> T.mylet(mm: (String)->R):R{
 
 
 
+# 4.自定义view
+
+- 布局： onLayout/ onMeasure   (layout:viewgroup)
+- 显示：onDraw               (view: canvas, paint, matrix, clip, rect, animation, path, line)
+- 交互：onTouchEvent   (组合的viewGroup)
+
+
+
+自定义控件分类
+
+- 自定义view： 重写onMeasure() 和 onDraw()
+- 自定义viewgroup：重写onMeasure() 和 onLayout()
+
+```java
+public class CustomView extends View {
+    /**
+     * 代码直接调用
+     * @param context
+     */
+    public CustomView(Context context) {
+        super(context);
+    }
+    /**
+     * xml调用
+     * @param context
+     * @param attrs  自定义属性
+     *               通过<declare-styleable> 为自定义view添加属性
+     */
+    public CustomView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+      	// 解析布局属性
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomView);
+        boolean aBoolean = typedArray.getBoolean(R.styleable.CustomView_layout_simple_attr, false);
+        int gravity = typedArray.getInteger(R.styleable.CustomView_android_layout_gravity, 0);
+       	typedArray.recycle();
+    }
+    /**
+     * 不会自动调用，一般第二个函数调用
+     * @param context
+     * @param attrs
+     * @param defStyleAttr  view style
+     */
+    public CustomView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+    /**
+     * api21之后才使用，不会自动调用，一般第二个函数调用
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     * @param defStyleRes
+     */
+    public CustomView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+}
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomView">
+        <!-- 自定义属性 -->
+        <attr name="layout_simple_attr" format="boolean"/>
+        <!-- 使用系统预置的属性 -->
+        <attr name="android:layout_gravity"/>
+    </declare-styleable>
+</resources>
+  
+
+
+CustomView view = null;
+int left = view.getLeft();  //当前view的左上角与父view的左侧距离
+int right = view.getRight();//当前view的右上角与父view的左侧距离
+
+MotionEvent event = null;
+float x = event.getX();      //触摸点相对于 该view 的坐标系 坐标
+float rawX = event.getRawX();//触摸点相对于 屏幕默认 的坐标系 坐标
+```
+
+
+
+**view视图结构**
+
+- **PhoneWindow**：android系统中最基本的窗口系统，继承windows类，管理界面显示和事件响应。activity和view系统交互的接口
+- **DecorView**（framlayout）：PhoneWindow的起始节点view，设置窗口属性。
+- **ViewRoot**：activity启动时创建，负责管理/布局/渲染UI等。
+
+**view树的绘制流程**：通过ViewRoot去负责绘制，是view树的管理者，负责将DecorView和PhoneWindow“组合”起来；每个DecorView都有一个ViewRoot与之关联，由WindowManager进行管理。
+
+
+
+> 无论measure/layout/draw，都是从view的根节点开始测量（DecorView），层层递归，最终计算整个view树中的各个view，最终确定相关属性。
+
+
+
+**绘制流程**
+
+- 构造函数（view初始化）
+- onMeasure() （测量view大小）
+- onSizeChanged() （确定view大小）
+- onLayout()  （确定子view布局，包含子view时用）
+- onDraw()  （实际绘制内容）
+- 视图状态改变 (用户操作或者自身变化引起)   =====>invalidate()=====>onDraw()
+- 结束  
+
+
+
+
+
+- **LayoutParams**：布局参数，父容器控制子view的布局，都是对应**ViewGroup子类（LinearLayout）**的内部类。如LinearLayout.LayoutParams。
+
+- **MarginLayoutParams**：增加了对上下左右的外间距支持。大部分LayoutParams的实现类都继承MarginLayoutParams，因为基本所有父容器都支持子view**设置外间距**
+
+
+
+**MeasureSpec**：测量规格。（SpecMode/SpecSize）
+
+- unspecified：不对view大小限制，系统使用
+- exactly：确切大小，100dp
+- at_most：大小不可超过某个值，  如：matchParent，不能超过父
+
+
+
+> **子view**的MeasureSpec值：根据**子view的布局参数**（LayoutParams）和**父容器的MeasureSpec**值计算得来，封装在getChildMeasureSpec()
+>
+> ```
+> 对于不同的父容器和view本身不同的LayoutParams，view就可以有多种MeasureSpec。 
+> 1. 当view采用固定宽高的时候，不管父容器的MeasureSpec是什么，view的MeasureSpec都是精确模式并且其大小遵循Layoutparams中的大小； 
+> 2. 当view的宽高是match_parent时，
+>  2.1 父容器的模式是精准模式，那么view也是精准模式并且其大小是父容器的剩余空间，
+>  2.2 父容器是最大模式，那么view也是最大模式并且其大小不会超过父容器的剩余空间； 
+> 3. 当view的宽高是wrap_content时，不管父容器的模式是精准还是最大化，view的模式总是最大化并且大小不能超过父容器的剩余空间。 
+> 4. Unspecified模式，这个模式主要用于系统内部多次measure的情况下，一般来说，我们不需要关注此模式(这里注意自定义View放到ScrollView的情况需要处理。
+> ```
+
+
+
+- view.getWidth() ：执行 onlayout 布局后获取
+- view.getMeasuredWidth()： 执行onMeasure 测量后获取
+
+
+
+
+
+# 5. xml解析-换肤
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
