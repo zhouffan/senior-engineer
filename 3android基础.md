@@ -412,29 +412,138 @@ float rawX = event.getRawX();//触摸点相对于 屏幕默认 的坐标系 坐�
 
 
 
+# 6.京东淘宝首页二级联动
+
+> tools--->Layout  Inspector查看view的层级
 
 
 
+嵌套滑动： 包含父+ 子
+
+NestedScrollView：可以充当父嵌套和子嵌套 
 
 
 
+**单点手指**：
+
+- ACTION_DOWN ：手指 **初次接触到屏幕** 时触发。 
+
+- ACTION_MOVE ：手指 **在屏幕上滑动** 时触发，会会多次触发。 
+
+- ACTION_UP ：手指 **离开屏幕** 时触发。 
+
+- ACTION_CANCEL ：事件 **被上层拦截** 时触发。
+
+**多点手指**：
+
+- ACTION_DOWN ：**第一个** 手指 **初次接触到屏幕** 时触发。 
+
+- ACTION_MOVE 手指 **在屏幕上滑动** 时触发，====>会多次触发。 (多个手指)
+
+- ACTION_UP **最后一个** 手指 **离开屏幕** 时触发。 
+
+- **ACTION_POINTER_DOWN** 有非主要的手指按下(**即按下之前已经有手指在屏幕上**)。 
+
+- **ACTION_POINTER_UP** 有非主要的手指抬起(**即抬起之后仍然有手指在屏幕上**)。 
 
 
 
+**事件处理函数**
+
+- dispatchTouchEvent：事件分发   （activity / viewgroup / view）
+- onInterceptTouchEvent：事件拦截 （**viewgroup**）
+- onTouchEvent：事件消费 （activity / viewgroup / view）
+
+>  MotionEvent-->父向子分发事件dispatchTouchEvent---->若子允许父拦截--->且父进行onInterceptTouchEvent---->父进行事件消费onTouchEvent
 
 
 
+**事件分发大流程**
+
+//TODO 图片
+
+```java
+//ViewGroup 是根据 onInterceptTouchEvent 的返回值来 确定 是调用子View的 dispatchTouchEvent 还是 自身的 onTouchEvent， 并没有将调用交 给onInterceptTouchEvent.
+public dispatchTouchEvent(MotionEvent ev) { 
+  // 默认状态为没有消费过 
+	boolean result = false; 
+  // 如果没有拦截交给子View 
+  if (!onInterceptTouchEvent(ev)) { 
+    result = child.dispatchTouchEvent(ev); 
+  }
+  // 如果事件没有被消费,询问自身onTouchEvent
+  if (!result) {  
+    result = onTouchEvent(ev); 
+  }
+  return result; 
+}
 
 
 
+public boolean dispatchTouchEvent(MotionEvent ev) { 
+  // 默认状态为没有消费过 
+  boolean result = false; 
+  //决定是否拦截 
+  final boolean intercepted = false; 
+  if (!requestDisallowInterceptTouchEvent()) {   <===============
+    intercepted = onInterceptTouchEvent(ev); 
+  }
+  //找出最适合接收的孩子 
+  if (!intercepted && (DOWN || POINTER_DOWN || HOVER_MOVE)) { 
+    // 如果没有拦截交给子View 
+    for (int i = childrenCount - 1; i >= 0; i--) { 
+      mFirstTouchTarget = child.dispatchTouchEvent(ev); 
+    } 
+  }
+  //分发事件 
+  if (mFirstTouchTarget == null) { 
+    // 如果事件没有被消费,询问自身onTouchEvent 
+    result = onTouchEvent(ev); 
+  } else { 
+    for(TouchTarget touchTarget : mFirstTouchTarget) { 
+      result = touchTarget.child.dispatchTouchEvent(ev); 
+    } 
+  }
+  return result;
+}
+```
 
 
 
+**事件监听器调用先后顺序**
+
+- onTouchListener：ACTION_DOWN 和 ACTION_UP。最前面
+- onTouchEvent：提供了一种默认的处理方式。 **view自身**
+- onLongClickListener：不需要ACTION_UP
+- onClickListener：需要两个事件(ACTION_DOWN 和 ACTION_UP )才能触发，如果先分配给onClick判断，等它判断完，用户手指已经离开屏幕。
 
 
 
+**TouchTarget**：手势设置的，跨越事件保留
+
+1、mFirstTouchTarget是TouchTarget，是一个链表； 
+
+2、mFirstTouchTarget记录的是该view的第一个接收该手势的子view； 
+
+3、mFirstTouchTarget的next的TouchTarget记录的是这个手势的其他手指或者鼠标所在的子view； 
+
+4、mFirstTouchTarget是一个view group是否有孩子处理该事件的一个标志，为null表明没有孩子处理它， 否则表明action_down已经分发给他的孩子了； 
+
+5、mFirstTouchTarget是View group的成员变量，标志着每个view group都有一个这样的变量，如果一个手势被一个view处理，那么他的父亲和祖父们的mFirstTouchTarget都不会为null；
 
 
 
+**外部拦截**
 
+- 当ViewPager接收到DOWN事件，ViewPager默认不拦截DOWN事件，DOWN事件交由ListView处理，由于ListView可以滚动，即可以消费事件，则ViewPager的mFirstTouchTarget会被赋值，即找到处理事件的子View。然后ViewPager接收到MOVE事件， 
+
+- 若此事件是ViewPager不需要，则同样会将事件交由ListView去处理，然后ListView处理事件； 
+
+- 若此事件ViewGroup需要，因为DOWN事件被ListView处理，mFirstTouchEventTarget会被赋值，也就会调用onInterceptedTouchEvent,此时由于ViewPager对此事件感兴趣 ，则onInterceptedTouchEvent方法会返回true，表示ViewPager会拦截事件，此时当前的MOVE事件会消失，变为CANCEL事件，往下传递或者自己处理，同时mFirstTouchTarget被重置为null。 
+
+- 当MOVE事件再次来到时，由于mFristTouchTarget为null，所以接下来的事件都交给了ViewPager。
+
+**内部拦截**
+
+- requestDisallowInterceptTouchEvent(false)
 
