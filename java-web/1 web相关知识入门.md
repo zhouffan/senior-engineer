@@ -1,4 +1,56 @@
+[《后端架构师技术图谱》](https://github.com/xingshaocheng/architect-awesome)
+
 # 1 configuration
+
+## 1.0 linux
+
+https://www.cnblogs.com/zhuchenglin/p/8686924.html
+
+linux目录结构
+
+
+
+1.按照文件名查找
+
+　　　　(1)find / -name httpd.conf　　#在根目录下查找文件httpd.conf，表示在整个硬盘查找
+　　　　(2)find /etc -name httpd.conf　　#在/etc目录下文件httpd.conf
+　　　　(3)find /etc -name '*srm*'　　#使用通配符*(0或者任意多个)。表示在/etc目录下查找文件名中含有字符串‘srm’的文件
+　　　　(4)find . -name 'srm*' 　　#表示当前目录下查找文件名开头是字符串‘srm’的文件
+
+2.按照文件特征查找 　　　　
+
+　　　　(1)find / -amin -10 　　# 查找在系统中最后10分钟访问的文件(access time)
+　　　　(2)find / -atime -2　　 # 查找在系统中最后48小时访问的文件
+　　　　(3)find / -empty 　　# 查找在系统中为空的文件或者文件夹
+　　　　(4)find / -group cat 　　# 查找在系统中属于 group为cat的文件
+　　　　(5)find / -mmin -5 　　# 查找在系统中最后5分钟里修改过的文件(modify time)
+　　　　(6)find / -mtime -1 　　#查找在系统中最后24小时里修改过的文件
+　　　　(7)find / -user fred 　　#查找在系统中属于fred这个用户的文件
+　　　　(8)find / -size +10000c　　#查找出大于10000000字节的文件(c:字节，w:双字，k:KB，M:MB，G:GB)
+　　　　(9)find / -size -1000k 　　#查找出小于1000KB的文件
+
+二、grep命令
+
+　　　  基本格式：find  expression
+
+ 　　　 1.主要参数
+
+　　　　[options]主要参数：
+　　　　－c：只输出匹配行的计数。
+　　　　－i：不区分大小写
+　　　　－h：查询多文件时不显示文件名。
+　　　　－l：查询多文件时只输出包含匹配字符的文件名。
+　　　　－n：显示匹配行及行号。
+　　　　－s：不显示不存在或无匹配文本的错误信息。
+　　　　－v：显示不包含匹配文本的所有行。
+
+
+
+```
+find / -name '*.txt' |grep zhou
+```
+
+
 
 ## 1.1 docker
 
@@ -7,6 +59,12 @@
 Sockerfile ==(build)==>镜像 <==(save/load)==>tar文件
 
 ​                                         容器（commit/run）
+
+(**镜像**可以理解为一个Java类，而**容器**可以理解为Java类的实例。)
+
+https://blog.csdn.net/sunnyzyq/article/details/101222410
+
+
 
 
 
