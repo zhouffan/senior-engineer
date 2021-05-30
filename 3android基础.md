@@ -257,6 +257,337 @@ fun <T, R> T.mylet(mm: (String)->R):R{
 
 
 
+**示例一：**基础
+
+```kotlin
+fun main() {
+    val stu2 =  Student2(4545, "Derry", 'M')
+    val (v1, v2, v3) = stu2.copy()
+    //自定义解构赋值
+    val stu =  Student(4545, "Derry", 'M')
+    val(n1, n2, n3 ,n4) = stu
+
+    stu.show("")
+
+    `123`()
+    showClass(KtStudent::class)
+    showClass2(Thread::class.java)
+
+    val instance = SingleInstance.getInstance()
+    specialStr()
+    lenMethod("222","333","444")
+}
+
+//扩展函数
+fun Student.show(string: String){
+    println(string)
+}
+
+//自定义解构赋值
+data class Student2(var id: Int, var name: String ,var sex: Char)
+class Student(var id: Int, var name: String ,var sex: Char){
+    // component 不能写错
+    operator fun component1(): Int = id
+    operator fun component2(): String = name
+    operator fun component3(): Char = sex
+    operator fun component4(): String = "KT Study OK"
+
+    //运算符重载   student + student
+    operator fun plus(num: Int): Int{
+        return id + num
+    }
+
+}
+
+//特殊名称方法
+fun `123`(){
+    print("xx")
+}
+
+//kotlin类 KtStudent
+fun showClass(clazz: KClass<KtStudent>){}
+//java类  thread
+fun showClass2(clazz: Class<Thread>){}
+class KtStudent{}
+
+/**
+ * 可变参数
+ * @param names Array<out String>
+ */
+fun lenMethod(vararg names: String){
+    names.forEach {
+        println(it)
+    }
+}
+
+fun specialStr(){
+    // --- 自己不用关系 \n 换行 ，不用自己调整
+    val infoMesage = """
+        AAAAAAAAAAA
+        BBBBBBBBBBB 
+    """  // 前置空格
+    println(infoMesage)
+
+    val infoMesage2 = """
+        AAAAAAAAAAA
+        BBBBBBBBBBB 
+    """.trimIndent()  // 没空格
+    println(infoMesage2)
+
+    val infoMesage3 = """
+        ?AAAAAAAAAAA
+        ?BBBBBBBBBBB 
+    """.trimMargin("?")  // 没空格 控制|
+    println(infoMesage3)
+
+    // 需求：显示 $99999.99
+    val price = """
+        ${'$'}99999.99
+    """.trimIndent()
+    println(price)
+}
+
+fun forMethod(){
+    for(i in 1..10){
+        println(i)
+    }
+    for (i in 9 downTo 1){
+        println(i)
+    }
+    for (i in 1 until 30 step 2 ){
+        println(i)
+    }
+}
+
+fun forTag(){
+    //自定义标签
+    aaa@for ( i in 1..10){
+        for (j in 1..10){
+            if(j == 3){
+//                break//停止最近循环
+                break@aaa
+            }
+        }
+    }
+}
+
+fun otherMethod(){
+    // ---  比较对象地址
+    val test1:Int? =  10000
+    val test2:Int? =  10000
+    println(test1 === test2) // false
+
+    val num = if (test1 == 1) {
+        false
+    } else {
+        true
+    }
+
+    when (test1) {
+        1000 -> println("sss")
+        in 1..20 -> println("222")
+    }
+}
+
+
+class Person(id: Int){//主构造
+    //次构造
+    constructor():this(-1){}
+    //次构造
+    constructor(id: Int, name:String):this(id){}
+}
+
+class Sub{
+    val num: Int = 1
+    //嵌套类
+    class Sub1{
+//        val s = num
+    }
+    //内部类
+    inner class Sub2{
+        val s = num
+    }
+
+}
+
+class SingleInstance{
+    //object 单例
+    object Holder{
+        val instance = SingleInstance()
+    }
+    companion object{
+        //对外提供方法
+        fun getInstance() = Holder.instance
+    }
+}
+```
+
+
+
+**示例二：** 函数高级
+
+```kotlin
+fun main() {
+    val name: String? = null
+    testMethod().myRunOk {
+        //回调方法是泛型的
+        true
+    }
+    //方法体返回的是 this:String， 因为 '万能泛型.'
+    name?.myRunOk {
+            it-> print(it)
+        print("$length")
+        false
+    }
+    //方法体里面没有对象
+    name.myRunOk2 {
+        it-> print(it)
+        true
+    }
+
+    //`::` 拿到函数类型的对象
+    val m1 = ::testMethod
+    test01(m1)
+
+    //无限链式调用
+    name.myAlso {
+
+    }.myAlso {
+
+    }.myAlso {
+
+    }
+
+    ktrun() {
+        println("执行了一次 x")
+    }
+}
+
+
+fun testMethod(){
+    print("xxx")
+}
+
+fun test01(mm: ()->Unit){
+    mm()
+}
+
+// 自定义线程封装
+fun ktrun(
+    start: Boolean = true,
+    name: String ? = null,
+    myRunAction: () -> Unit) : Thread {
+    val thread = object : Thread() {
+        override fun run() {
+            super.run()
+            myRunAction()
+        }
+    }
+    name ?: "DerryThread"
+    if (start)
+        thread.start()
+    return thread
+}
+
+/**
+ * 高阶函数：
+ * @receiver 万能泛型   随意定义
+ * @param mm [@kotlin.ExtensionFunctionType] Function1<万能泛型, Boolean>
+ *     ‘万能泛型.()->Boolean’  ：回调方法是泛型的
+ */
+fun <万能泛型> 万能泛型.myRunOk(mm: 万能泛型.(Int)->Boolean){
+    mm(10)
+}
+fun <万能泛型> 万能泛型.myRunOk2(mm: (Int)->Boolean){
+    mm(10)
+}
+//R：返回泛型
+fun <T, R> T.myRun(mm: ()->R):R{
+    return mm()
+}
+fun <T, R> T.myLet(mm: T.(T) -> R): R {
+    // T == this   () -> R
+    // mm(this) == this     vs    T.(T)  -> R
+    return mm(this)
+}
+
+//返回this， 可以无限链式调用
+fun <T> T.myAlso(mm: (T) -> Unit) : T{
+    // T == this
+    // it == T == this == name
+    mm(this)
+    return this
+}
+```
+
+
+
+**示例三**：(out 只能取，不能修改。in 只能修改（存）， 不能获取)
+
+```kotlin
+fun main() {
+    println("111")
+    //out 只能取，不能修改   == ? extends FuClass
+    val list: MutableList<out FuClass> = ArrayList<ZiClass>()
+    //in 只能修改（存）， 不能获取   === ？ super ZiClass
+    val list2:MutableList<in ZiClass> = ArrayList<FuClass>()
+}
+
+open class FuClass{}
+class ZiClass: FuClass(){}
+
+/**
+ * 控制读写模式
+ * @param out T 只能获取，不能修改
+ */
+class TestClass <out T>{
+    fun getData(): T? = null
+//    fun setData(data: T){}   //报错
+}
+
+class TestClass2 <in T>{
+//    fun getData(): T? = null //报错
+    fun setData(data: T){}
+}
+
+
+
+===============================
+public class Simple03ExtendSupper {
+
+    public static void main(String[] args) {
+        System.out.println("xxx");
+        FClass fClass = new FClass();
+        ZClass zClass = new ZClass();
+
+        //1
+        ArrayList<FClass> list = new ArrayList<FClass>();
+        list.add(fClass);
+        list.add(zClass);
+        list.get(0);
+        //2  不能修改， 只能获取
+        ArrayList<? extends FClass> list2 = new ArrayList<ZClass>();
+//        list2.add(fClass);//报错   不知道FClass的 子是谁
+//        list2.add(zClass);//报错   不知道FClass的 子是谁
+        FClass c = list2.get(0);
+        //3  不能获取， 只能修改
+        ArrayList<? super ZClass> list3 = new ArrayList<FClass>();
+        list3.add(zClass);
+//        FClass c2 = list3.get(0);//报错   不知道 ZClass 的父是谁
+//        ZClass c3 = list3.get(0);//报错   不知道 ZClass 的父是谁， 只能强转
+
+    }
+    static class FClass{}
+    static class ZClass extends FClass{}
+}
+```
+
+
+
+
+
+
+
 
 
 
