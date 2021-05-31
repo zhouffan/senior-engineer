@@ -76,6 +76,11 @@ https://blog.csdn.net/sunnyzyq/article/details/101222410
 Helloworld：docker run hello-world  （本地没有镜像的话会自动从远端仓库pull）
 **pull nginx 镜像**：docker pull nginx（等效于nginx:latest）
 **运行**：docker run -【d】（后台运行不阻塞shell） 【-p 80:80】（指定容器端口映射，内部：外部） nginx
+
+```
+$ docker run --name nginx-test -p 8080:80 -d nginx
+```
+
 **查看正在运行**：docker ps
 **删除容器**：docker rm -f container id(不用打全，前缀区分)
 **进入bas**h：docker exec -it container id(不用打全，前缀区分) bash
@@ -87,11 +92,50 @@ Helloworld：docker run hello-world  （本地没有镜像的话会自动从远�
 **保存为tar**：docker save name  tar name
 **从tar加载**：docker load  tar name
 
-一些启动参数：
-后台运行容器：-d
-容器内外端口映射：-p 内部端口号:外部端口号
-目录映射：-v dir name : dir
-指定映像版本：name:ver
+```java
+//使用 tomcat 镜像
+//-d 后台运行
+//-p 指定访问主机的8081端口映射到8080端口。  内部端口号:外部端口号
+//-v 指定我们容器的/usr/local/tomcat/webapps/目录为/root/tomcat/主机目录，后续我们要对tomcat进行操作直接在主机这个目录操作即可。
+//指定映像版本：name:ver
+docker run -d -p 8081:8080 -v /root/tomcat/:/usr/local/tomcat/webapps/ tomcat
+
+//列出所有容器 ID 
+docker ps -aq
+//停止所有容器 
+docker stop $(docker ps -aq)
+//停止单个容器 
+docker stop 要停止的容器名
+//删除所有容器
+docker rm $(docker ps -aq)
+//删除单个容器
+docker rm 要删除的容器名
+//删除所有的镜像
+docker rmi $(docker images -q)
+  
+//进入目录
+docker exec -it xxxxxx容器 /bin/bash
+  
+  
+//vim 新建Dockerfile文件
+FROM java:8
+MAINTAINER bingo
+ADD demo-0.0.1-SNAPSHOT.jar demo.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","demo.jar"]
+  
+//创建镜像   注意最后的 .  表示 Dockerfile 文件在当前目录下
+docker build -t my/demo .
+//这个表示docker容器在停止或服务器开机之后会自动重新启动 --restart=always
+//已经运行的docker容器怎么设置自动重启？ docker update –-restart=always demo 
+docker run -d --name demo -p 8080:8080 my/demo
+//查看启动日志
+docker logs --tail  300 -f  demo   
+//打包镜像
+docker save -o xxxx.tar my/demo
+//解包
+docker load -i xxxx.tar
+```
 
 
 
@@ -132,6 +176,7 @@ docker pull jenkins/jenkins:lts    //lts:长期演进版，长期支持
 mkdir -p /mydata/jenkins_home
 //运行容器
 docker run -di --name=jenkins -p 8080:8080 -v /mydata/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+//docker run -d -p 8080:8080 -p 50000:50000 -v /mydata/jenkins_home/:/var/jenkins_home jenkins/jenkins:lts
 
 docker ps -a
 chown -R 1000 /mydata/jenkins_home/   //加权限
@@ -143,7 +188,7 @@ docker logs jenkins  //查看日志
 
 /mydata/jenkins_home/secrets/initialAdminPassword   //查看密码
   
- 
+ x
 //优先 安装推荐插件
 
 //插件： SSH 
@@ -357,7 +402,7 @@ docker ps   //查看容器
 
 # 其他
 
-## 1.局域网下，Windows通过SSH连接Linux
+## 1.0 局域网下，Windows通过SSH连接Linux
 
 ```
 Linux安装SSH
@@ -374,3 +419,24 @@ xshell连接Ubuntu
 新建->host填入Ubuntu的IP地址，端口默认22，protocol默认ssh->连接填入用户名密码即可 
 ```
 
+
+
+# 问题归纳
+
+## 1.0 apt-get install E: 无法定位软件包问题
+
+https://blog.csdn.net/beizhengren/article/details/77678603?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-1&spm=1001.2101.3001.4242
+
+添加镜像源
+
+
+
+## 1.2 docker 下载的tomcat 访问404
+
+```
+使用命令: docker exec -it 运行的tomcat容器ID /bin/bash 进入到tomcat的目录
+进入webapps文件夹,发现里面是空的(tomcat默认的欢迎页面实际上放在的路径应该是:webapps/ROOT/index.jsp或者index.html)
+发现旁边还有个webapps.dist的文件,进入才发现原本应该在webapps文件中的文件都在webapps.dist文件中,现在也不知道为什么！！！
+```
+
+cp -r ./webapps.dist/* ./webapps/
