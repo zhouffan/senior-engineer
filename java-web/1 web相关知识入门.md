@@ -268,9 +268,43 @@ docker ps   //查看容器
 
 ## 3.2 postgresql
 
+- MySQL：目前最受欢迎的开源数据库。多线程
+
+- PostgreSQL：最先进的开源数据库。多进程
+
+
+
 
 
 ## 3.3 mongodb(nosql)
+
+**三元素**：
+
+- 数据库
+- 集合：对应关系数据库中的“表”
+- 文档：对应“行”
+
+**mongodb:字典格式，支持分组、索引、主从备份、集群**
+
+**端口号：**
+
+mysql: 3306
+
+redis: 6379
+
+mongodb: 27017
+
+
+
+https://www.cnblogs.com/for-easy-fast/p/12914718.html#autoid-1-0-0
+
+https://blog.csdn.net/qq_41856814/article/details/89714627
+
+
+
+
+
+
 
 
 
