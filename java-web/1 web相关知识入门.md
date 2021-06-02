@@ -4,9 +4,82 @@
 
 ## 1.0 linux
 
-https://www.cnblogs.com/zhuchenglin/p/8686924.html
+命令大全：https://man.linuxde.net/
 
-linux目录结构
+linux目录结构：https://www.cnblogs.com/zhuchenglin/p/8686924.html
+
+```java
+//切换登录用户    /etc/group
+su - 用户名
+useradd xxx
+userdel xxx
+passwd xxx
+  
+groupadd ggg
+groupmod ggg
+  
+ls /bin
+//重启网络服务
+service network restart
+  //关闭防火墙     /etc/sysconfig/network-scripts/ifcfg-xxx
+  systemctl stop firewalld
+  systemctl disable firewalld //禁止开机启动
+  
+  //查看内容
+  cat //最后一屏
+  more //百分比， 回车：下一行；空格：下一页， q：退出
+  less // pgUp /pgDn
+  head -10 / tail -10 //文件前10行，  后10行   ctrl+c:结束
+  tail -f //tail：后，  对某个文件动态监控， 如tomcat日志文件  tail -f catalina-222.log
+  //tail -f logs/catalina.out
+  
+  man  
+  
+  find  /usr/local/ -name *.txt  //查找
+  mv  //移动/改名
+  cp -r  // -r 复制目录  recursion 循环
+  touch xxx.txt
+  
+  chmod u=rwx,g=rw,o=r text.txt
+  chmod 764 text.txt
+  
+  grep //搜索   grep a   xx.txt
+  ps -ef/ ps aux //ps aux|grep redis        
+  kill -9 pid //-9强制终止
+  
+  ping
+  //netstat -tulnp|grep LISTEN    an: 所有连接端口；tulnp：正在TCP/UDP监听的端口；rn：网关  ===>可以各种组合
+  netstat 
+  ln //创建链接，  -s：软链接， 没有则是硬链接（copy）
+  
+  tar -zxvf jdkxxxx.tar.gz // 解压至/urs/local 
+  vim /etc/profile 
+  "
+JAVA_HOME=/usr/local/jdk1.8.0
+CLASSPATH=$JAVA_HOME/lib/
+PATH=$PATH:$JAVA_HOME/bin  //:增量
+export PATH JAVA_HOME CLASSPATH
+  "
+  source /etc/profile  
+  java -version
+  
+  
+  
+```
+
+
+
+vim 编辑命令
+
+```java
+//删除行
+dd
+//
+```
+
+
+
+
 
 
 
