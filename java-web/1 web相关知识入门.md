@@ -341,9 +341,9 @@ docker ps   //查看容器
 
 ## 3.2 postgresql
 
-- MySQL：目前最受欢迎的开源数据库。多线程
+- MySQL：目前最受欢迎的开源数据库。**多线程**
 
-- PostgreSQL：最先进的开源数据库。多进程
+- PostgreSQL：最先进的开源数据库。**多进程**
 
 
 
