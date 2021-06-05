@@ -64,7 +64,9 @@ export PATH JAVA_HOME CLASSPATH
   java -version
   
   
-  
+ 
+
+scp  /etc/hosts root@mq2:/etc/   //复制当前hosts 到另一台虚拟机上去      s：sudo   cp：copy
 ```
 
 
@@ -79,6 +81,8 @@ export PATH JAVA_HOME CLASSPATH
 - :wq/ q! 退出
 
 ```java
+:set nu   //设置行号
+
 //移动光标
 hjkl //上下左右
 ctrl+b //后移动一页
@@ -685,6 +689,135 @@ AbstractRoutingDataSource： 逻辑数据源
 
 
 ## 5.4 rabbitmq
+
+官网---Docs---Get Started
+
+https://blog.csdn.net/unique_perfect/article/details/109380996
+
+
+
+生产者（写消息）----- 消息队列 ----- 消费者（消费消息）  ：解耦
+
+基于AMQP协议：advanced message queuing protocol
+
+erlang语言开发。
+
+find / -name rabbit.config.example
+
+virtual host: 虚拟主机 ，添加对应用户
+
+10.15.0.9:5672
+
+
+
+**第一种模型：直连**
+
+创建连接工厂----创建连接对象----获取连接通道----通道绑定消息队列----发布消息----关闭 
+
+> ctrl + H 
+
+**队列持久化/ 消息持久化**： 分别设置参数.
+
+**exclusive**: 是否独占队列 （false：多个连接共用一个队列）
+
+
+
+**第二种模型：work queue**   
+
+多个消费者消费不同消息。
+
+
+
+**第三种模型：publish/subscribe**  ，fanout广播， 多个消费者消费同一条消息
+
+创建连接工厂----创建连接对象----获取连接通道----**绑定交换机**----创建临时队列----临时队列绑定到交换机----处理消息
+
+
+
+**第四种模型：Routing **  路由        （在fanout广播模式下，不同的消息，被不同的队列消费），**定向发送**
+
+订阅模型： direct 直连
+
+生产者发送消息给交换机（携带RoutingKey）----- 交换机绑定队列（携带RoutingKey）---队列对应的消费者
+
+
+
+**第五种模型：topic**（动态路由）      **通配符** ： 多个单词组成，‘.’分割
+
+- *：匹配一个单词。    eg:  \*.orange.\*
+- #：匹配一个或多个单词
+
+
+
+
+
+### **应用场景**
+
+- **异步处理**
+
+  用户------注册信息写入数据库（返回给用户）-----写入消息队列   -----发送注册邮件
+
+  ​																											 -----发送注册短信
+
+  注册邮件和短信不是必须流程。  
+
+- **应用解耦**
+
+  订单系统-------消息队列------库存系统  （库存系统异常，不影响订单系统下单）
+
+- **流量削峰**
+
+  秒杀活动： 用户请求-----消息队列------秒杀业务处理系统
+
+  超过队列最大值，抛弃请求或者跳转错误页面。
+
+
+
+### RabbitMQ的集群
+
+多个mq
+
+#### 普通集群（副本集群）
+
+- 解决问题：当master节点宕机，可以对queue中信息进行备份（slave）
+
+- 主从mq， 分散消费压力（**提供并发**）
+
+- 仅仅只能同步exchange， 不能同步队列  （**队列中才存放消息**）
+- 如果**主节点宕机**，**从节点**都不能提供能力
+
+
+
+#### 镜像集群
+
+- 消息100%不丢失，
+
+- 各节点（主节点，从节点）之间**进行消息自动同步**（可同步exchange及队列）
+
+ 
+
+
+
+
+
+```java
+@SpringBootTest(classes = RabbitmqSpringbootApplication.class)
+@RunWith(SpringRunner.class)
+public class TestTabbitMq{
+  @Autoried
+  private RabbitTemplate rt;
+  @Test
+  public void test(){
+    
+  }
+}
+```
+
+
+
+
+
+
 
 
 
