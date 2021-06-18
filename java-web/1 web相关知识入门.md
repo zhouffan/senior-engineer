@@ -64,7 +64,9 @@ export PATH JAVA_HOME CLASSPATH
   java -version
   
   
-  
+ 
+
+scp  /etc/hosts root@mq2:/etc/   //复制当前hosts 到另一台虚拟机上去      s：sudo   cp：copy
 ```
 
 
@@ -79,6 +81,8 @@ export PATH JAVA_HOME CLASSPATH
 - :wq/ q! 退出
 
 ```java
+:set nu   //设置行号
+
 //移动光标
 hjkl //上下左右
 ctrl+b //后移动一页
@@ -175,6 +179,8 @@ find / -name '*.txt' |grep zhou
 
 
 
+
+
 ## 1.1 docker
 
 ​                                        仓库（push/pull）
@@ -265,6 +271,171 @@ docker load -i xxxx.tar
 
 
 ## 1.2 kubernetes
+
+
+
+
+
+
+
+
+
+## 1.3 nginx
+
+http://www.nginx.cn/doc/index.html
+
+定义： http服务器/反向代理服务器/电子邮件代理服务器，支持5万并发。
+
+翻墙： 正向代理
+
+nginx： 反向代理，不知道实际地址
+
+
+
+```
+nginx -V/-v 
+nginx -T/-t
+nginx -q
+nginx -s reopen
+nginx -s stop
+nginx -s quit   //推荐
+nginx -s reload 
+nginx -g
+
+./nginx/sbin/nginx  //启动
+sz nginx.conf  //拉取文件
+```
+
+
+
+```
+yum install -y pcre-devel openssl-devel gcc curl
+cd /usr/local/
+wget https://openresty.org/download/openresty-1.17.8.2.tar.gz
+cd /usr/local/
+tar -zxvf openresty-1.17.8.2.tar.gz
+cd /usr/local/
+mv openresty-1.17.8.2 openresty
+cd /usr/local/openresty/
+./configure --with-luajit \
+--without-http_redis2_module \
+--with-http_iconv_module
+cd /usr/local/openresty/
+make&& make install
+```
+
+chmod +x openresty.sh
+
+config配置文件   (复制**多份tomcat**，不同主页，进行访问测试)
+
+```java
+worker_processes 8; //cpu核心数*2
+enents{
+	#工作模型，日志中看到
+	use epoll;
+}
+http{
+	//限制访问速率
+	limit_req_zone $binary_remote_addr zone=tuling:10m rate=2r/s;
+
+	server{
+		listen  80;
+		
+		//服务组
+		upstream tuling{
+			//轮询，权重，iphash:每个访客固定一个后端服务，
+			server 127.0.0.1:8080 weight=1;   
+			server localhost:8081 weight=2; 
+		}
+		upstream tuling2{
+			ip_hash；    //iphash:每个访客固定一个后端服务
+			least_conn; //请求分配到 最少连接的服务上     防止有些一直保持连接
+			fair;
+			server 127.0.0.1:8082;
+			server 127.0.0.1:8083 backup; //backup 实现热备
+		}
+		
+		location / {  //   ‘/’代表所有
+			proxy_pass http://tuling;  //请求到 tuling
+			...
+		}
+		location /test.html {  //请求定位： 匹配规则
+			proxy_pass http://tuling2;  //请求到 tuling2
+			
+			
+			//调用速率控制
+			limit_req zone=tuling burst=5 nodelay;  //缓存5个请求   nodelay 不延迟
+			
+			...
+		}
+	}
+}
+
+
+
+ab -n100 -c10 http://127.0.0.1/    //模拟请求  100次请求， 
+```
+
+**限流：**单位时间内，限制用户访问服务器次数。 （超出服务器承载的流量，qps）
+
+**限流算法：**
+
+- **漏桶** （直接丢弃）    nginx使用方式
+
+  请求从上方倒入水桶，从水桶下发流出（处理）；固定速率流出；水桶满时，谁溢出（丢弃）；
+
+- **令牌桶** （含有一个队列）
+
+  令牌固定速度产生，缓存到令牌桶中； 令牌桶满时，多余令牌丢弃；请求消耗令牌；令牌不够时，请求缓存
+
+- **计数器**
+
+- **滑动窗口**
+
+
+
+**nginx实现动静分离**
+
+- 静态页面由nginx处理
+- 动态页面交给服务器或者apache处理
+
+```
+	
+	server{
+		location ~*\.(jpg|gif)${
+			proxy_pass http://tuling   //指定到服务器来提供
+			#root html;   //nginx内部提供
+		}
+	}
+	
+```
+
+
+
+**nginx热备部署**：双主模式
+
+- 利用keepalived解决单点风险，一旦nginx宕机，快速切换到备份服务器。
+
+- nginx+keepalived  （多台nginx，多台实际服务器）
+
+```
+yum install nginx keepalived pcre-devel -y
+
+//keepalived.conf
+vrrp_instance VI_1{
+	state MASTER  //备用机 修改为BACKUP
+	...
+	priority 100 //备用机设置低
+}
+
+service keepalived start/stop
+cd /etc/keepalived/
+
+```
+
+用户 ----- 访问虚拟ip ---- keepalived（虚拟出来的ip，检查nginx存活状态，决定访问哪个）--------nginx （选择master/backup）
+
+
 
 
 
@@ -455,6 +626,36 @@ https://blog.csdn.net/qq_41856814/article/details/89714627
 
 
 
+## 3.8 分库分表
+
+问题
+
+- 数据库连接/io负载  （解决：读写分离）
+- 单点故障
+
+写：主库
+
+读：从库        一主多从    1:10
+
+mysql复制  ：   双主复制，多级复制 
+
+如何自动切换数据源？ 
+
+---->**aop**：主程序流程中，插入其他抽取功能。切面编程
+
+```
+//从库---读
+@pointcut("execution(* com.xx.xx.service..*.query*(..)) ||com.xx.xx.service..*.find*(..))  ")
+//主库---写
+@pointcut("execution(* com.xx.xx.service..*.insert*(..)) ||com.xx.xx.service..*.add*(..))  ")
+```
+
+AbstractRoutingDataSource： 逻辑数据源
+
+重写determineCurrentLookupKey方法 ，切换数据源
+
+
+
 # 4 rpc 
 
 ## 4.1 corba
@@ -470,6 +671,10 @@ https://blog.csdn.net/qq_41856814/article/details/89714627
 
 
 ## 4.4 google protobuf
+
+
+
+
 
 
 
@@ -492,6 +697,135 @@ https://blog.csdn.net/qq_41856814/article/details/89714627
 
 
 ## 5.4 rabbitmq
+
+官网---Docs---Get Started
+
+https://blog.csdn.net/unique_perfect/article/details/109380996
+
+
+
+生产者（写消息）----- 消息队列 ----- 消费者（消费消息）  ：解耦
+
+基于AMQP协议：advanced message queuing protocol
+
+erlang语言开发。
+
+find / -name rabbit.config.example
+
+virtual host: 虚拟主机 ，添加对应用户
+
+10.15.0.9:5672
+
+
+
+**第一种模型：直连**
+
+创建连接工厂----创建连接对象----获取连接通道----通道绑定消息队列----发布消息----关闭 
+
+> ctrl + H 
+
+**队列持久化/ 消息持久化**： 分别设置参数.
+
+**exclusive**: 是否独占队列 （false：多个连接共用一个队列）
+
+
+
+**第二种模型：work queue**   
+
+多个消费者消费不同消息。
+
+
+
+**第三种模型：publish/subscribe**  ，fanout广播， 多个消费者消费同一条消息
+
+创建连接工厂----创建连接对象----获取连接通道----**绑定交换机**----创建临时队列----临时队列绑定到交换机----处理消息
+
+
+
+**第四种模型：Routing **  路由        （在fanout广播模式下，不同的消息，被不同的队列消费），**定向发送**
+
+订阅模型： direct 直连
+
+生产者发送消息给交换机（携带RoutingKey）----- 交换机绑定队列（携带RoutingKey）---队列对应的消费者
+
+
+
+**第五种模型：topic**（动态路由）      **通配符** ： 多个单词组成，‘.’分割
+
+- *：匹配一个单词。    eg:  \*.orange.\*
+- #：匹配一个或多个单词
+
+
+
+
+
+### **应用场景**
+
+- **异步处理**
+
+  用户------注册信息写入数据库（返回给用户）-----写入消息队列   -----发送注册邮件
+
+  ​																											 -----发送注册短信
+
+  注册邮件和短信不是必须流程。  
+
+- **应用解耦**
+
+  订单系统-------消息队列------库存系统  （库存系统异常，不影响订单系统下单）
+
+- **流量削峰**
+
+  秒杀活动： 用户请求-----消息队列------秒杀业务处理系统
+
+  超过队列最大值，抛弃请求或者跳转错误页面。
+
+
+
+### RabbitMQ的集群
+
+多个mq
+
+#### 普通集群（副本集群）
+
+- 解决问题：当master节点宕机，可以对queue中信息进行备份（slave）
+
+- 主从mq， 分散消费压力（**提供并发**）
+
+- 仅仅只能同步exchange， 不能同步队列  （**队列中才存放消息**）
+- 如果**主节点宕机**，**从节点**都不能提供能力
+
+
+
+#### 镜像集群
+
+- 消息100%不丢失，
+
+- 各节点（主节点，从节点）之间**进行消息自动同步**（可同步exchange及队列）
+
+ 
+
+
+
+
+
+```java
+@SpringBootTest(classes = RabbitmqSpringbootApplication.class)
+@RunWith(SpringRunner.class)
+public class TestTabbitMq{
+  @Autoried
+  private RabbitTemplate rt;
+  @Test
+  public void test(){
+    
+  }
+}
+```
+
+
+
+
+
+
 
 
 
