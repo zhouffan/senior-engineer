@@ -564,6 +564,76 @@ UPDATE excmd_in_tmp_210618 SET status = 0 where create_time > '2021-06-01 00:00:
 
 
 
+### 索引
+
+​	缺点：维护需要耗费数据库资源；占用磁盘空间；对数据增删改时，需要维护索引
+
+- 主键索引：唯一，不为空
+
+  create teable t_user(id varcher(20) **primary key**, name varcher(20));
+
+  show **index** from t_user;       //查看索引
+
+- 单值索引：单个字段的索引
+
+  create table t_user2(id varcher(20) primary key, name varchar(20), **key(name)**);
+
+  create **index** name_index on t_user(name);
+
+  **drop** index 索引名 on t_user2;   //删除索引
+
+- 唯一索引：唯一，可空
+
+  create table t_user3(id varcher(20) primary key, name varchar(20), **unique(name)**);
+
+  create **unique index** name_index on t_user3(name);
+
+- 复合索引：多个字段的索引
+
+  create table t_user3(id varcher(20) primary key, name varchar(20), age int, **key(name, age)**);
+
+  create index name_age_index on t_user(name, age);
+
+  ```markdown
+  # 经典面试
+  - name age bir //1.最左前缀原则；2.mysql引擎在查询过程中动态调整查询字段优化索引
+    以下哪些能利用索引？
+    name bir age   // 可以，调整成name age bir
+    name age bir   // 可以
+    age bir        // 不可以
+    bir age name   // 可以，调整成name age bir
+    age bir        // 不可以
+    
+    
+    
+  1. mysql底层为主键自动创建索引，并进行排序，便于排序。
+  2. mysql索引进一步优化：基于 页 的形式管理； 提出页目录，先找页，再找数据。 （16kb）
+  ```
+
+  
+
+**B+Tree 和 B-Tree**：
+
+- B树：每个节点包含：key/data。  即存储data，会导致16kb存储的数量降低，导致树的深度增加，增大磁盘I/O次数。
+
+- B+树（B树基础上优化）：1.非叶子节点只存储键值信息；2.叶子节点之间都有一个链指针；3.所有数据都记录在叶子节点中。 一般在2--4层。 **顶层页常驻内存**
+
+ 
+
+**聚簇索引和非聚簇索引**：
+
+- 聚簇索引：数据存储与索引放在一起，索引结构的叶子节点保存了行数据。
+
+- 非聚簇索引：数据和索引分开存储，索引结构的叶子节点指向了数据对应的位置。
+
+  都是辅助索引：复合索引，前缀索引，唯一索引；辅助索引的叶子节点存储的不是行物理位置，而是主键值。需要再进行二次主键索引查找。
+
+
+
+不建议uuid作为主键，使用bigint 自增作为主键。
+
+
+
 
 
 
@@ -895,6 +965,86 @@ public class TestTabbitMq{
 
 
 
+# 9 tool
+
+## 9.1 maven
+
+- 一键迁移 （myeclipse，idea...）
+- 支持远程（热）部署  （远程服务器地址  账号/密码）
+- 支持持续集成（CI）
+
+```java
+src/main/java  //src/main/webapp   相当于以前web的webRoot
+src/main/resources   //运行时的配置文件
+src/test/java
+src/test/resources
+  
+pom.xml  //maven项目配置文件
+```
+
+
+
+## 9.2 gradle
+
+- 项目构建工具：  编辑/编译/测试/打包/部署...  （ant/maven/gradle）
+
+- 使用groovy语言编写
+
+底层转换为Java语言，  也是基于jvm运行。
+
+idea(Tools --> Groovy Console...)
+
+```groovy
+int a = 222
+def a2 = 22   //弱类型   groovy中最终都是对象类型
+println a.class
+
+def play(def num){
+  println num
+}
+play("hhhh")
+
+def list = ['1','2']
+for(a in list){
+  println a
+}
+
+def map = ['a':1, 'b':2]
+println map.a
+for(m in map){
+  println m.key + '---' + m.value
+}
+
+//闭包
+def m1 = {
+  println 'hello'
+}
+def play(Closure c){   //Closure不需要导包
+  c()
+}
+play(m1)
+//带参闭包
+def m2={
+  v-> println 'hell0'+v
+}
+def play(Closure c){
+  c("zhangsan")
+}
+play(m2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -917,6 +1067,12 @@ Ubuntu终端输入：sudo /etc/init.d/ssh start
 xshell连接Ubuntu
 新建->host填入Ubuntu的IP地址，端口默认22，protocol默认ssh->连接填入用户名密码即可 
 ```
+
+## 2.0 ====>工具
+
+FastStone ：画图工具
+
+
 
 
 
