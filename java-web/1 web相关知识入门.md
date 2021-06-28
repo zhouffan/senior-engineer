@@ -564,7 +564,7 @@ UPDATE excmd_in_tmp_210618 SET status = 0 where create_time > '2021-06-01 00:00:
 
 
 
-### 索引
+### 3.1.1 索引
 
 ​	缺点：维护需要耗费数据库资源；占用磁盘空间；对数据增删改时，需要维护索引
 
@@ -668,11 +668,69 @@ mongodb: 27017
 
 
 
-https://www.cnblogs.com/for-easy-fast/p/12914718.html#autoid-1-0-0
+MongoDB的使用 https://www.cnblogs.com/for-easy-fast/p/12914718.html#autoid-1-0-0
 
-https://blog.csdn.net/qq_41856814/article/details/89714627
+Mongodb基本使用方法 https://blog.csdn.net/qq_41856814/article/details/89714627
 
 
+
+> 集群：一个业务jar部署多套。
+>
+> 分布式：业务拆分成多个，并进行部署。（分布式一定在集群之上）
+
+mongodb：分布式存储数据库（数据拆分成多份进行存储。）     **没有事务的概念**（不能替换mysql） 
+
+bson/json： 数据容易进行扩展。
+
+
+
+```java
+show database; /show dbs;  //查看mongo中所有库
+use test;  //选中库（没有的话则会创建并选中， 默认不显示空集合的库）
+db;  //查询当前所在库
+db.createCollection("t_user"); //创建集合
+db.help;
+db.dropDatabase();
+
+//集合
+db.createCollection("集合名称");
+db.集合名称.insert({"name":"value"})  //隐式创建
+db.t_user.drop();  //删除
+db.集合名称.help(); 
+show collections; /show tables;  //当前库中有哪些集合
+
+//文档，行
+db.集合名称.insert({"name":"value"})  //隐式创建，自动创建 "_id"的key
+db.集合名称.insert([{},{},{},{} ])   //插入多条数据
+for(var i=0; i<100;i++){     //插入多条数据
+  db.集合名称.insert({...});
+}
+db.集合名称.remove({}) //删除所有
+db.集合名称.remove({name:"张三"}) //条件删除
+db.集合名称.update({更新条件},{更新内容}) //查询，删除之前，新增内容
+db.集合名称.update({更新条件},{$set:{更新内容}})  //查询，新增。 默认只修改符合条件的第一条
+db.集合名称.update({更新条件},{$set:{更新内容}},{multi:true}) //开启多条匹配
+db.集合名称.update({更新条件},{$set:{更新内容}},{multi:true,upsert:true})//没有符合条件时，插入
+db.集合名称.update({更新条件},{$inc:{age:10,id:5}})//指定字段自增步长
+
+//查询
+db.集合名称.find();  //查找所有
+db.集合名称.findOne({条件});
+db.集合名称.find({条件},{显示字段}); // 1显示，0不显示  {name:1,age:1}
+db.集合名称.find().sort({age:1,name:-1}) //1 升序  -1 降序
+//分页： skip((pageNow-1)*pageSize).limit(pageSize)
+db.集合名称.find().sort({...}).skip(起始条数).limit(每页数) 
+db.集合名称.count();
+db.集合名称.find({}).count();
+db.集合名称.find({name:/xxx/})   //模糊查询，  错误写法：find({name:"/xxx/"})
+//高级查询（$eq, $and, $or, $gt(>), $lt(<), $gte(>=), $lte(<=), $nor(既不是，也不是) ）
+db.集合名称.find({name:{$eq:"xxx"}})
+db.集合名称.find({$and[{xx:xx,yy:yy}, {vv:vv}]})
+db.集合名称.find({$or[{xx:xx,yy:yy}, {vv:vv}]})
+db.集合名称.find({$nor[{xx:xx,yy:yy}, {vv:vv}]})
+db.集合名称.find({age:{$gt:6, $lt:10})
+
+```
 
 
 
@@ -1034,6 +1092,16 @@ play(m2)
 ```
 
 
+
+
+
+## 9.3 git
+
+**ssh 免密码登录**：
+
+1. ssh-keygen -t rsa -C "zhouffan@qq.com"        //*#-t表示类型选项，这里采用rsa加密算法*
+
+2. 用户名/.ssh/id_rsa.pub    中的内容添加到远程 “SSH公钥”   //或者 ssh-copy-id ldz@192.168.0.1。ssh-copy-id会将公钥写到远程主机的 ~/ .ssh/authorized_key 文件中。
 
 
 
