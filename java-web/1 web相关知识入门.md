@@ -674,6 +674,10 @@ Mongodb基本使用方法 https://blog.csdn.net/qq_41856814/article/details/8971
 
 
 
+
+
+**笔记：** https://blog.csdn.net/unique_perfect/article/details/107777853
+
 > 集群：一个业务jar部署多套。
 >
 > 分布式：业务拆分成多个，并进行部署。（分布式一定在集群之上）
@@ -685,6 +689,8 @@ bson/json： 数据容易进行扩展。
 
 
 ```java
+//连接mongo： ./mongo --port 27017
+
 show database; /show dbs;  //查看mongo中所有库
 use test;  //选中库（没有的话则会创建并选中， 默认不显示空集合的库）
 db;  //查询当前所在库
@@ -733,6 +739,79 @@ db.集合名称.find({age:{$gt:6, $lt:10})
 ```
 
 
+
+```ABAP
+主从搭建（从节点只负责数据同步/冗余备份）：   （4.0废弃）
+1. 启动一个主节点： ./mongod --port --dbpath --master
+2. 启动多个从节点： 
+./mongod --port --dbpath --slave --source ip   //复制所有库
+./mongod --port --dbpath --slave --source ip --only 库名 --slavedelay //复制指定库 (延迟同步)
+
+
+
+
+rs.slaveOk(); :执行后，开启从节点查询
+rs.status;  :查看节点状态   
+
+
+
+
+副本集群搭建（Replica Set）：
+解决问题： 1.保证系统高可用，自动故障转移； 2.无法解决集群中服务器单点压力问题。
+步骤：
+1. 配置主机名： ip与别名映射
+  vi /etc/hosts        
+  192.168.2.2  xxx     
+  ping xxx
+2. 创建3个副本数据目录
+	mkdir  repl1 repl2 repl3
+3. 启动3个副本集机器
+	./mongod --port 27017 --dbpath /root/repl1 --bind_ip 0.0.0.0 --replSet myreplace/xxx:27018
+	./mongod --port 27018 --dbpath /root/repl2 --bind_ip 0.0.0.0 --replSet myreplace/xxx:27019
+	./mongod --port 27019 --dbpath /root/repl3 --bind_ip 0.0.0.0 --replSet myreplace/xxx:27017
+	
+4. 配置副本集 （配置必须在mongo中默认的admin库中左集群的配置）
+ - 通过client登录到任意一个节点
+ 		./mongo --port 27017
+ - 使用当前连接的mongo服务中的admin库
+ 		use admin
+ - 定义配置信息
+ 		var config ={
+ 			_id:"myreplace",
+ 			members:[
+ 				{_id:0, host:"xxx:27017"},
+ 				{_id:1, host:"xxx:27018"},
+ 				{_id:2, host:"xxx:27019"}
+ 			]
+ 		}
+ 		rs.initiate(config);
+5. 副本集节点添加（自动同步原有数据）
+	- 启动节点： mkdir -p repl4
+		./mongod --port 27020 --dbpath /root/repl4 --bind_ip 0.0.0.0 --replSet myreplace/xxx:27017
+	- 在现有主节点中admin库中添加副本节点
+		rs.add("xxx:27020");
+6. 副本集 删除节点（admin中执行）
+	rs.remove("xxx:27017")   //不能删除主节点
+	
+	
+	
+	
+	
+	
+分片：数据拆分到多个机器上
+应用情况： 1. 单机机器磁盘不够； 2. 单个mongod不能满足写数据的性能； 3.将大量数据放在内存中提高性能
+
+
+
+
+
+
+- ./mongo --port 27022
+- show dbs; //查看
+- use ems;
+- show collections;//查看
+- db.emps.count();
+```
 
 
 
