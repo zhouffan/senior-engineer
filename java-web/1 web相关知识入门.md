@@ -8,6 +8,8 @@
 
 linux目录结构：https://www.cnblogs.com/zhuchenglin/p/8686924.html
 
+https://blog.csdn.net/unique_perfect/article/details/105147240
+
 ```java
 //切换登录用户    /etc/group
 su - 用户名
@@ -284,6 +286,10 @@ docker load -i xxxx.tar
 
 http://www.nginx.cn/doc/index.html
 
+
+
+https://blog.csdn.net/unique_perfect/article/details/114390551
+
 定义： http服务器/反向代理服务器/电子邮件代理服务器，支持5万并发。
 
 翻墙： 正向代理
@@ -439,6 +445,10 @@ cd /etc/keepalived/
 
 
 
+## 1.5 tomcat
+
+https://blog.csdn.net/unique_perfect/article/details/105427754
+
 
 
 
@@ -557,6 +567,12 @@ docker ps   //查看容器
 # 3 database
 
 ## 3.1 mysql
+
+https://blog.csdn.net/unique_perfect/article/details/105259901
+
+https://blog.csdn.net/unique_perfect/article/details/112746592
+
+
 
 CREATE TABLE excmd_in_tmp_210618 AS SELECT * FROM excmd_in WHERE main_code in ('99008800000000108PITEM0011035948','99008800000000108PITEM0011141297','99008800000000108PITEM0011036251','99008800000000108PITEM0011170509','99008800000000108PITEM0010941621','99008800000000108PITEM0011171909','99008800000000108PITEM0011110482','99008800000000108PITEM0011141245');
 
@@ -819,9 +835,19 @@ rs.status;  :查看节点状态
 
 ## 3.4 redis(nosql)
 
+https://blog.csdn.net/unique_perfect/article/details/105515137
+
+
+
 
 
 ## 3.5 elasticsearch
+
+https://blog.csdn.net/unique_perfect/article/details/108972132
+
+https://blog.csdn.net/xj0927/category_10702933.html
+
+
 
 
 
@@ -834,6 +860,10 @@ rs.status;  :查看节点状态
 
 
 ## 3.8 分库分表
+
+https://blog.csdn.net/unique_perfect/article/details/116134490
+
+
 
 问题
 
@@ -908,6 +938,8 @@ AbstractRoutingDataSource： 逻辑数据源
 官网---Docs---Get Started
 
 https://blog.csdn.net/unique_perfect/article/details/109380996
+
+https://blog.csdn.net/aaaaa1111111199/article/details/116862636   Docker搭建RabbitMq镜像集群
 
 
 
