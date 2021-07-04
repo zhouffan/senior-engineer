@@ -69,11 +69,14 @@ export PATH JAVA_HOME CLASSPATH
  
 
 scp  /etc/hosts root@mq2:/etc/   //复制当前hosts 到另一台虚拟机上去      s：sudo   cp：copy
+  
+cp -r dir1 dir2   //如果dir2目录不存在
+cp -r dir1/. dir2 //如果dir2目录已存在（如果这时使用cp -r dir1 dir2,则也会将dir1目录复制到dir2中）
 ```
 
 
 
-**vim 编辑命令**
+### vim 编辑命令
 
 - 进入文件
 - **命令模式**
@@ -289,6 +292,45 @@ http://www.nginx.cn/doc/index.html
 
 
 https://blog.csdn.net/unique_perfect/article/details/114390551
+
+```
+//远程服务器上docker要做好内部和外部端口的映射; 关键还要把对外开放的端口添加到防火墙
+netstat -anp                        //查询已开放的端口 
+firewall-cmd --query-port=666/tcp   //查询指定端口是否已开 
+
+//查看防火墙状态
+systemctl status firewalld  //查看防火墙状态 
+systemctl start firewalld   //开启防火墙 
+systemctl stop firewalld    //关闭防火墙 
+service firewalld start     //开启防火墙 
+//若遇到无法开启
+systemctl unmask firewalld.service 
+systemctl start firewalld.service
+
+firewall-cmd --add-port=123/tcp --permanent    //添加指定需要开放的端口
+firewall-cmd --reload                          //重载入添加的端口
+firewall-cmd --permanent --remove-port=123/tcp //移除指定端口
+
+wget http://nginx.org/download/nginx-1.20.0.tar.gz  //下载
+tar -zxvf nginx-1.20.1.tar.gz -C /usr/local/java/   //-C 切换到指定目录(不是在当前文件夹)
+
+//源码的安装一般由3个步骤组成：配置(configure)、编译(make)、安装(make install)。
+//--prefix选项是配置安装的路径。如果不配置该选项，安装后可执行文件默认放在/usr/local/bin，
+库文件默认放在/usr/local/lib；配置文件默认放在/usr/local/etc；其它的资源文件放在/usr/local/share，比较凌乱。   如果配置--prefix，把所有资源文件放在/usr/local/nginx的路径中
+./configure --prefix=/usr/local/nginx    //指定配置路径
+make&&make install                       //安装
+cd /usr/local/nginx/sbin/nginx           //启动nginx
+lsof -i:80                    //查看端口
+ps -ef | grep nginx
+curl 127.0.0.1                //访问
+find / -name nginx  
+```
+
+
+
+
+
+
 
 定义： http服务器/反向代理服务器/电子邮件代理服务器，支持5万并发。
 
