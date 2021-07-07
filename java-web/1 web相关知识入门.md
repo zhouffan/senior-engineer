@@ -23,47 +23,47 @@ groupmod ggg
 ls /bin
 //重启网络服务
 service network restart
-  //关闭防火墙     /etc/sysconfig/network-scripts/ifcfg-xxx
-  systemctl stop firewalld
-  systemctl disable firewalld //禁止开机启动
+//关闭防火墙     /etc/sysconfig/network-scripts/ifcfg-xxx
+systemctl stop firewalld
+systemctl disable firewalld //禁止开机启动
   
-  //查看内容
-  cat //最后一屏
-  more //百分比， 回车：下一行；空格：下一页， q：退出
-  less // pgUp /pgDn
-  head -10 / tail -10 //文件前10行，  后10行   ctrl+c:结束
-  tail -f //tail：后，  对某个文件动态监控， 如tomcat日志文件  tail -f catalina-222.log
-  //tail -f logs/catalina.out
+//查看内容
+cat //最后一屏
+more //百分比， 回车：下一行；空格：下一页， q：退出
+less // pgUp /pgDn
+head -10 / tail -10 //文件前10行，  后10行   ctrl+c:结束
+tail -f //tail：后，  对某个文件动态监控， 如tomcat日志文件  tail -f catalina-222.log
+//tail -f logs/catalina.out
   
-  man  
+man  
   
-  find  /usr/local/ -name *.txt  //查找
-  mv  //移动/改名
-  cp -r  // -r 复制目录  recursion 循环
-  touch xxx.txt
+find  /usr/local/ -name *.txt  //查找
+mv  //移动/改名
+cp -r  // -r 复制目录  recursion 循环
+touch xxx.txt
   
-  chmod u=rwx,g=rw,o=r text.txt
-  chmod 764 text.txt
+chmod u=rwx,g=rw,o=r text.txt
+chmod 764 text.txt
   
-  grep //搜索   grep a   xx.txt
-  ps -ef/ ps aux //ps aux|grep redis        
-  kill -9 pid //-9强制终止
+grep //搜索   grep a   xx.txt
+ps -ef/ ps aux //ps aux|grep redis        
+kill -9 pid //-9强制终止
   
-  ping
-  //netstat -tulnp|grep LISTEN    an: 所有连接端口；tulnp：正在TCP/UDP监听的端口；rn：网关  ===>可以各种组合
-  netstat 
-  ln //创建链接，  -s：软链接， 没有则是硬链接（copy）
+ping
+//netstat -tulnp|grep LISTEN    an: 所有连接端口；tulnp：正在TCP/UDP监听的端口；rn：网关  ===>可以各种组合
+netstat 
+ln //创建链接，  -s：软链接， 没有则是硬链接（copy）
   
-  tar -zxvf jdkxxxx.tar.gz // 解压至/urs/local 
-  vim /etc/profile 
+tar -zxvf jdkxxxx.tar.gz // 解压至/urs/local 
+vim /etc/profile 
   "
-JAVA_HOME=/usr/local/jdk1.8.0
-CLASSPATH=$JAVA_HOME/lib/
-PATH=$PATH:$JAVA_HOME/bin  //:增量
-export PATH JAVA_HOME CLASSPATH
+	JAVA_HOME=/usr/local/jdk1.8.0
+	CLASSPATH=$JAVA_HOME/lib/
+	PATH=$PATH:$JAVA_HOME/bin  //:增量
+	export PATH JAVA_HOME CLASSPATH
   "
-  source /etc/profile  
-  java -version
+source /etc/profile  
+java -version
   
   
  
@@ -86,10 +86,11 @@ cp -r dir1/. dir2 //如果dir2目录已存在（如果这时使用cp -r dir1 dir
 - :wq/ q! 退出
 
 ```java
-:set nu   //设置行号
+:set nu   //显示行号
+:set nonu //取消显示行号
 
 //移动光标
-hjkl //上下左右
+h  j  k  l //==============================>上下左右
 ctrl+b //后移动一页
 ctrl+f //前移动一页
 ctrl+u //后移动半页
@@ -102,23 +103,33 @@ e //光标到下个字的结尾
 b //光标回到上个字的开头
 #1 //光标移到该行的第‘#’个位置   51  561
 gg //进入文本的开始
+//跳转到指定行
+n+ //==============================>向下跳n行
+n- //==============================>向上跳n行
+nG //==============================>跳到行号为n的行
+G  //==============================>跳至文件的底部
 
 
 //删除文字
-dd  //删除光标行
-#dd //6dd: 删除6行，光标所在行开始
-x   //删除光标所在位置的一个字符
-#x  //6x：删除光标所在位置后面6个字符， 包括自己
+dd  //==============================>删除光标行
+ndd //==============================>6dd: 删除6行，光标所在行开始
+x   //==============================>删除光标所在位置的一个字符
+nx  //==============================>6x：删除光标所在位置后面6个字符， 包括自己
+u   //==============================>撤销上一步操作
 shift+x == X //删除光标位置的前一个字符
 shift+#x == #X //20X：删除光标前20个字符
 
     
+//搜索
+/xxx //==============================>向光标下搜索xxx字符串
+?xxx //==============================>向光标上搜索xxx字符串
+    
 //复制
-yw //光标所在位置到字尾，复制到缓冲区
-#yw // 6yw:复制6个字符到缓冲区
-yy  //复制光标所在行
-#yy //光标行开始，复制多行
-p   //粘贴到光标所在位置      与y有关的命令完成复制、粘贴
+yw  //==============================>光标所在位置到字尾，复制到缓冲区
+nyw //==============================>6yw:复制6个字符到缓冲区
+yy  //==============================>复制光标所在行
+nyy //==============================>光标行开始，复制多行
+p   //==============================>粘贴到光标所在位置      与y有关的命令完成复制、粘贴
     
     
 //替换
