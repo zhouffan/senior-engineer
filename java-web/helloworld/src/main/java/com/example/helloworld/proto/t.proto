@@ -1,0 +1,2459 @@
+message Result {
+
+  message RESPONSESTATUS {
+    required bool IsSuccess = 0
+  }
+
+  required RESPONSESTATUS ResponseStatus = 0
+
+  message RESULT {
+    required double Id = 0
+    required string FFormId = 1
+    required string BillNo = 2
+    required string DocumentStatus = 3
+    required double SaleOrgId_Id = 4
+
+    message SALEORGID {
+      required double Id = 0
+
+      message MULTILANGUAGETEXT {
+        required double PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 2
+      required string Number = 3
+
+      message FRADIO {
+      }
+
+      required FRADIO FRadio = 4
+      required double ParentOrg_Id = 5
+
+      message PARENTORG {
+        required double Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required PARENTORG ParentOrg = 6
+      required string OrgFunctions = 7
+    }
+
+    required SALEORGID SaleOrgId = 5
+    required string Date = 6
+    required double CustId_Id = 7
+
+    message CUSTID {
+      required double Id = 0
+      required double msterID = 1
+
+      message MULTILANGUAGETEXT {
+        required double PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 3
+      required string Number = 4
+      required string TEL = 5
+      required double FGROUPCUSTID_Id = 6
+
+      message FGROUPCUSTID {
+      }
+
+      required FGROUPCUSTID FGROUPCUSTID = 7
+      required double TRADINGCURRID_Id = 8
+
+      message TRADINGCURRID {
+        required double Id = 0
+        required double msterID = 1
+        required string Number = 2
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 4
+      }
+
+      required TRADINGCURRID TRADINGCURRID = 9
+      required double SALDEPTID_Id = 10
+
+      message SALDEPTID {
+      }
+
+      required SALDEPTID SALDEPTID = 11
+      required double SALGROUPID_Id = 12
+
+      message SALGROUPID {
+      }
+
+      required SALGROUPID SALGROUPID = 13
+      required double SELLER_Id = 14
+
+      message SELLER {
+      }
+
+      required SELLER SELLER = 15
+      required double TRANSLEADTIME = 16
+      required double PRICELISTID_Id = 17
+
+      message PRICELISTID {
+      }
+
+      required PRICELISTID PRICELISTID = 18
+      required double DISCOUNTLISTID_Id = 19
+
+      message DISCOUNTLISTID {
+      }
+
+      required DISCOUNTLISTID DISCOUNTLISTID = 20
+      required double SETTLETYPEID_Id = 21
+
+      message SETTLETYPEID {
+      }
+
+      required SETTLETYPEID SETTLETYPEID = 22
+      required double RECCONDITIONID_Id = 23
+
+      message RECCONDITIONID {
+      }
+
+      required RECCONDITIONID RECCONDITIONID = 24
+      required bool FISCREDITCHECK = 25
+      required string TaxType_Id = 26
+
+      message TAXTYPE {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required TAXTYPE TaxType = 27
+      required string CustTypeId_Id = 28
+
+      message CUSTTYPEID {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required CUSTTYPEID CustTypeId = 29
+      required string ADDRESS = 30
+      required double CorrespondOrgId_Id = 31
+
+      message CORRESPONDORGID {
+      }
+
+      required CORRESPONDORGID CorrespondOrgId = 32
+      required bool IsDefPayer = 33
+      required bool IsGroup = 34
+      required bool IsTrade = 35
+      repeated undefined BD_CUSTCONTACT = 36
+
+      message BD_CUSTOMEREXT {
+        required double Id = 0
+        required double DefaultContact_Id = 1
+
+        message DEFAULTCONTACT {
+        }
+
+        required DEFAULTCONTACT DefaultContact = 2
+        required double MarginLevel = 3
+        required double SettleId_Id = 4
+
+        message SETTLEID {
+        }
+
+        required SETTLEID SettleId = 5
+        required double ChargeId_Id = 6
+
+        message CHARGEID {
+        }
+
+        required CHARGEID ChargeId = 7
+      }
+
+      repeated BD_CUSTOMEREXT BD_CUSTOMEREXT = 37
+    }
+
+    required CUSTID CustId = 8
+    required double SaleDeptId_Id = 9
+
+    message SALEDEPTID {
+    }
+
+    required SALEDEPTID SaleDeptId = 10
+    required double SaleGroupId_Id = 11
+
+    message SALEGROUPID {
+    }
+
+    required SALEGROUPID SaleGroupId = 12
+    required double SalerId_Id = 13
+
+    message SALERID {
+    }
+
+    required SALERID SalerId = 14
+    required double ReceiveId_Id = 15
+
+    message RECEIVEID {
+      required double Id = 0
+      required double msterID = 1
+
+      message MULTILANGUAGETEXT {
+        required double PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 3
+      required string Number = 4
+      required string TEL = 5
+      required double FGROUPCUSTID_Id = 6
+
+      message FGROUPCUSTID {
+      }
+
+      required FGROUPCUSTID FGROUPCUSTID = 7
+      required double TRADINGCURRID_Id = 8
+
+      message TRADINGCURRID {
+        required double Id = 0
+        required double msterID = 1
+        required string Number = 2
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 4
+      }
+
+      required TRADINGCURRID TRADINGCURRID = 9
+      required double SALDEPTID_Id = 10
+
+      message SALDEPTID {
+      }
+
+      required SALDEPTID SALDEPTID = 11
+      required double SALGROUPID_Id = 12
+
+      message SALGROUPID {
+      }
+
+      required SALGROUPID SALGROUPID = 13
+      required double SELLER_Id = 14
+
+      message SELLER {
+      }
+
+      required SELLER SELLER = 15
+      required double TRANSLEADTIME = 16
+      required double PRICELISTID_Id = 17
+
+      message PRICELISTID {
+      }
+
+      required PRICELISTID PRICELISTID = 18
+      required double DISCOUNTLISTID_Id = 19
+
+      message DISCOUNTLISTID {
+      }
+
+      required DISCOUNTLISTID DISCOUNTLISTID = 20
+      required double SETTLETYPEID_Id = 21
+
+      message SETTLETYPEID {
+      }
+
+      required SETTLETYPEID SETTLETYPEID = 22
+      required double RECCONDITIONID_Id = 23
+
+      message RECCONDITIONID {
+      }
+
+      required RECCONDITIONID RECCONDITIONID = 24
+      required bool FISCREDITCHECK = 25
+      required string TaxType_Id = 26
+
+      message TAXTYPE {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required TAXTYPE TaxType = 27
+      required string CustTypeId_Id = 28
+
+      message CUSTTYPEID {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required CUSTTYPEID CustTypeId = 29
+      required string ADDRESS = 30
+      required double CorrespondOrgId_Id = 31
+
+      message CORRESPONDORGID {
+      }
+
+      required CORRESPONDORGID CorrespondOrgId = 32
+      required bool IsDefPayer = 33
+      required bool IsGroup = 34
+      required bool IsTrade = 35
+      repeated undefined BD_CUSTCONTACT = 36
+
+      message BD_CUSTOMEREXT {
+        required double Id = 0
+        required double DefaultContact_Id = 1
+
+        message DEFAULTCONTACT {
+        }
+
+        required DEFAULTCONTACT DefaultContact = 2
+        required double MarginLevel = 3
+        required double SettleId_Id = 4
+
+        message SETTLEID {
+        }
+
+        required SETTLEID SettleId = 5
+        required double ChargeId_Id = 6
+
+        message CHARGEID {
+        }
+
+        required CHARGEID ChargeId = 7
+      }
+
+      repeated BD_CUSTOMEREXT BD_CUSTOMEREXT = 37
+    }
+
+    required RECEIVEID ReceiveId = 16
+    required double SettleId_Id = 17
+
+    message SETTLEID {
+      required double Id = 0
+      required double msterID = 1
+
+      message MULTILANGUAGETEXT {
+        required double PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 3
+      required string Number = 4
+      required string TEL = 5
+      required double FGROUPCUSTID_Id = 6
+
+      message FGROUPCUSTID {
+      }
+
+      required FGROUPCUSTID FGROUPCUSTID = 7
+      required double TRADINGCURRID_Id = 8
+
+      message TRADINGCURRID {
+        required double Id = 0
+        required double msterID = 1
+        required string Number = 2
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 4
+      }
+
+      required TRADINGCURRID TRADINGCURRID = 9
+      required double SALDEPTID_Id = 10
+
+      message SALDEPTID {
+      }
+
+      required SALDEPTID SALDEPTID = 11
+      required double SALGROUPID_Id = 12
+
+      message SALGROUPID {
+      }
+
+      required SALGROUPID SALGROUPID = 13
+      required double SELLER_Id = 14
+
+      message SELLER {
+      }
+
+      required SELLER SELLER = 15
+      required double TRANSLEADTIME = 16
+      required double PRICELISTID_Id = 17
+
+      message PRICELISTID {
+      }
+
+      required PRICELISTID PRICELISTID = 18
+      required double DISCOUNTLISTID_Id = 19
+
+      message DISCOUNTLISTID {
+      }
+
+      required DISCOUNTLISTID DISCOUNTLISTID = 20
+      required double SETTLETYPEID_Id = 21
+
+      message SETTLETYPEID {
+      }
+
+      required SETTLETYPEID SETTLETYPEID = 22
+      required double RECCONDITIONID_Id = 23
+
+      message RECCONDITIONID {
+      }
+
+      required RECCONDITIONID RECCONDITIONID = 24
+      required bool FISCREDITCHECK = 25
+      required string TaxType_Id = 26
+
+      message TAXTYPE {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required TAXTYPE TaxType = 27
+      required string CustTypeId_Id = 28
+
+      message CUSTTYPEID {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required CUSTTYPEID CustTypeId = 29
+      required string ADDRESS = 30
+      required double CorrespondOrgId_Id = 31
+
+      message CORRESPONDORGID {
+      }
+
+      required CORRESPONDORGID CorrespondOrgId = 32
+      required bool IsDefPayer = 33
+      required bool IsGroup = 34
+      required bool IsTrade = 35
+      repeated undefined BD_CUSTCONTACT = 36
+
+      message BD_CUSTOMEREXT {
+        required double Id = 0
+        required double DefaultContact_Id = 1
+
+        message DEFAULTCONTACT {
+        }
+
+        required DEFAULTCONTACT DefaultContact = 2
+        required double MarginLevel = 3
+        required double SettleId_Id = 4
+
+        message SETTLEID {
+        }
+
+        required SETTLEID SettleId = 5
+        required double ChargeId_Id = 6
+
+        message CHARGEID {
+        }
+
+        required CHARGEID ChargeId = 7
+      }
+
+      repeated BD_CUSTOMEREXT BD_CUSTOMEREXT = 37
+    }
+
+    required SETTLEID SettleId = 18
+    required double ChargeId_Id = 19
+
+    message CHARGEID {
+      required double Id = 0
+      required double msterID = 1
+
+      message MULTILANGUAGETEXT {
+        required double PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 3
+      required string Number = 4
+      required string TEL = 5
+      required double FGROUPCUSTID_Id = 6
+
+      message FGROUPCUSTID {
+      }
+
+      required FGROUPCUSTID FGROUPCUSTID = 7
+      required double TRADINGCURRID_Id = 8
+
+      message TRADINGCURRID {
+        required double Id = 0
+        required double msterID = 1
+        required string Number = 2
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 4
+      }
+
+      required TRADINGCURRID TRADINGCURRID = 9
+      required double SALDEPTID_Id = 10
+
+      message SALDEPTID {
+      }
+
+      required SALDEPTID SALDEPTID = 11
+      required double SALGROUPID_Id = 12
+
+      message SALGROUPID {
+      }
+
+      required SALGROUPID SALGROUPID = 13
+      required double SELLER_Id = 14
+
+      message SELLER {
+      }
+
+      required SELLER SELLER = 15
+      required double TRANSLEADTIME = 16
+      required double PRICELISTID_Id = 17
+
+      message PRICELISTID {
+      }
+
+      required PRICELISTID PRICELISTID = 18
+      required double DISCOUNTLISTID_Id = 19
+
+      message DISCOUNTLISTID {
+      }
+
+      required DISCOUNTLISTID DISCOUNTLISTID = 20
+      required double SETTLETYPEID_Id = 21
+
+      message SETTLETYPEID {
+      }
+
+      required SETTLETYPEID SETTLETYPEID = 22
+      required double RECCONDITIONID_Id = 23
+
+      message RECCONDITIONID {
+      }
+
+      required RECCONDITIONID RECCONDITIONID = 24
+      required bool FISCREDITCHECK = 25
+      required string TaxType_Id = 26
+
+      message TAXTYPE {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required TAXTYPE TaxType = 27
+      required string CustTypeId_Id = 28
+
+      message CUSTTYPEID {
+        required string Id = 0
+        required string Number = 1
+
+        message MULTILANGUAGETEXT {
+          required string PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+      }
+
+      required CUSTTYPEID CustTypeId = 29
+      required string ADDRESS = 30
+      required double CorrespondOrgId_Id = 31
+
+      message CORRESPONDORGID {
+      }
+
+      required CORRESPONDORGID CorrespondOrgId = 32
+      required bool IsDefPayer = 33
+      required bool IsGroup = 34
+      required bool IsTrade = 35
+      repeated undefined BD_CUSTCONTACT = 36
+
+      message BD_CUSTOMEREXT {
+        required double Id = 0
+        required double DefaultContact_Id = 1
+
+        message DEFAULTCONTACT {
+        }
+
+        required DEFAULTCONTACT DefaultContact = 2
+        required double MarginLevel = 3
+        required double SettleId_Id = 4
+
+        message SETTLEID {
+        }
+
+        required SETTLEID SettleId = 5
+        required double ChargeId_Id = 6
+
+        message CHARGEID {
+        }
+
+        required CHARGEID ChargeId = 7
+      }
+
+      repeated BD_CUSTOMEREXT BD_CUSTOMEREXT = 37
+    }
+
+    required CHARGEID ChargeId = 20
+    required double CreatorId_Id = 21
+
+    message CREATORID {
+      required double Id = 0
+      required string Name = 1
+      required string UserAccount = 2
+    }
+
+    required CREATORID CreatorId = 22
+    required string CreateDate = 23
+    required double ModifierId_Id = 24
+
+    message MODIFIERID {
+      required double Id = 0
+      required string Name = 1
+      required string UserAccount = 2
+    }
+
+    required MODIFIERID ModifierId = 25
+    required string MOdifyDate = 26
+    required double ApproverId_Id = 27
+
+    message APPROVERID {
+      required double Id = 0
+      required string Name = 1
+      required string UserAccount = 2
+    }
+
+    required APPROVERID ApproverId = 28
+    required string ApproveDate = 29
+    required string CloseStatus = 30
+    required double CloserId_Id = 31
+
+    message CLOSERID {
+    }
+
+    required CLOSERID CloserId = 32
+
+    message CLOSEDATE {
+    }
+
+    required CLOSEDATE CloseDate = 33
+    required string CancelStatus = 34
+    required double CancellerId_Id = 35
+
+    message CANCELLERID {
+    }
+
+    required CANCELLERID CancellerId = 36
+
+    message CANCELDATE {
+    }
+
+    required CANCELDATE CancelDate = 37
+    required string VersionNo = 38
+    required double ChangerId_Id = 39
+
+    message CHANGERID {
+    }
+
+    required CHANGERID ChangerId = 40
+
+    message CHANGEDATE {
+    }
+
+    required CHANGEDATE ChangeDate = 41
+    required string ChangeReason = 42
+    required string BillTypeId_Id = 43
+
+    message BILLTYPEID {
+      required string Id = 0
+
+      message MULTILANGUAGETEXT {
+        required string PkId = 0
+        required double LocaleId = 1
+        required string Name = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+      message NAME {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated NAME Name = 2
+      required string Number = 3
+    }
+
+    required BILLTYPEID BillTypeId = 44
+    required string BusinessType = 45
+    required string HeadDeliveryWay_Id = 46
+
+    message HEADDELIVERYWAY {
+    }
+
+    required HEADDELIVERYWAY HeadDeliveryWay = 47
+    required string ReceiveAddress = 48
+    required double HeadLocId_Id = 49
+
+    message HEADLOCID {
+    }
+
+    required HEADLOCID HeadLocId = 50
+    required string CreditCheckResult = 51
+    required double CorrespondOrgId_Id = 52
+
+    message CORRESPONDORGID {
+    }
+
+    required CORRESPONDORGID CorrespondOrgId = 53
+    required double ReceiveContact_Id = 54
+
+    message RECEIVECONTACT {
+    }
+
+    required RECEIVECONTACT ReceiveContact = 55
+    required string NetOrderBillNo = 56
+    required double NetOrderBillId = 57
+    required double OppID = 58
+    required double SalePhaseID_Id = 59
+
+    message SALEPHASEID {
+    }
+
+    required SALEPHASEID SalePhaseID = 60
+    required bool ISINIT = 61
+    required string Note = 62
+    required bool IsMobile = 63
+    required string SignStatus = 64
+    required bool IsDirectChange = 65
+    required bool ManualClose = 66
+    required string FLinkMan = 67
+    required string FLinkPhone = 68
+    required string SOFrom = 69
+    required string F_ora_Paytype_Id = 70
+
+    message F_ORA_PAYTYPE {
+      required string Id = 0
+      required string FNumber = 1
+
+      message MULTILANGUAGETEXT {
+        required string PkId = 0
+        required double LocaleId = 1
+        required string FDataValue = 2
+      }
+
+      repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+      message FDATAVALUE {
+        required double Key = 0
+        required string Value = 1
+      }
+
+      repeated FDATAVALUE FDataValue = 3
+    }
+
+    required F_ORA_PAYTYPE F_ora_Paytype = 71
+    required bool F_ora_SFDZ = 72
+    required string F_ora_payStatus = 73
+    required string FSaleman = 74
+    required string FTEL = 75
+
+    message SALEORDERCLAUSE {
+      required double Id = 0
+      required double Seq = 1
+      required double ClauseId_Id = 2
+
+      message CLAUSEID {
+      }
+
+      required CLAUSEID ClauseId = 3
+
+      message CLAUSEDESC {
+      }
+
+      required CLAUSEDESC ClauseDesc = 4
+    }
+
+    repeated SALEORDERCLAUSE SaleOrderClause = 76
+
+    message SALEORDERENTRY {
+      required double Id = 0
+      required double Seq = 1
+      required double MaterialId_Id = 2
+
+      message MATERIALID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+          required string Specification = 3
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double UseOrgId_Id = 5
+
+        message USEORGID {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required USEORGID UseOrgId = 6
+        required string MnemonicCode = 7
+
+        message SPECIFICATION {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated SPECIFICATION Specification = 8
+        required double MaterialGroup_Id = 9
+
+        message MATERIALGROUP {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required MATERIALGROUP MaterialGroup = 10
+
+        message MATERIALCMK {
+          required double Id = 0
+          required string FGoodBarCode_CMK = 1
+        }
+
+        repeated MATERIALCMK MaterialCMK = 11
+
+        message MATERIALBASE {
+          required double Id = 0
+          required string ErpClsID = 1
+          required bool IsInventory = 2
+          required bool IsSale = 3
+          required bool IsAsset = 4
+          required bool IsSubContract = 5
+          required bool IsProduce = 6
+          required bool IsPurchase = 7
+          required double BaseUnitId_Id = 8
+
+          message BASEUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required BASEUNITID BaseUnitId = 9
+          required string TaxType_Id = 10
+
+          message TAXTYPE {
+            required string Id = 0
+            required string Number = 1
+
+            message MULTILANGUAGETEXT {
+              required string PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 3
+          }
+
+          required TAXTYPE TaxType = 11
+          required double CategoryID_Id = 12
+
+          message CATEGORYID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required CATEGORYID CategoryID = 13
+
+          message BARCODE {
+          }
+
+          required BARCODE BARCODE = 14
+          required string Suite = 15
+        }
+
+        repeated MATERIALBASE MaterialBase = 12
+
+        message MATERIALSTOCK {
+          required double Id = 0
+          required double StoreUnitID_Id = 1
+
+          message STOREUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required STOREUNITID StoreUnitID = 2
+          required double AuxUnitID_Id = 3
+
+          message AUXUNITID {
+          }
+
+          required AUXUNITID AuxUnitID = 4
+          required double StockId_Id = 5
+
+          message STOCKID {
+          }
+
+          required STOCKID StockId = 6
+          required string ExpUnit = 7
+          required double OnlineLife = 8
+          required double ExpPeriod = 9
+          required bool IsBatchManage = 10
+          required bool IsKFPeriod = 11
+          required bool IsExpParToFlot = 12
+        }
+
+        repeated MATERIALSTOCK MaterialStock = 13
+
+        message MATERIALSALE {
+          required double Id = 0
+          required double SalePriceUnitId_Id = 1
+
+          message SALEPRICEUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required SALEPRICEUNITID SalePriceUnitId = 2
+          required double SaleUnitId_Id = 3
+
+          message SALEUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required SALEUNITID SaleUnitId = 4
+          required bool IsReturn = 5
+          required double OutStockLmtH = 6
+          required double OutStockLmtL = 7
+          required string OutLmtUnit = 8
+          required double SalGroup_Id = 9
+
+          message SALGROUP {
+          }
+
+          required SALGROUP SalGroup = 10
+        }
+
+        repeated MATERIALSALE MaterialSale = 14
+
+        message MATERIALPURCHASE {
+          required double Id = 0
+          required double PurchaseUnitID_Id = 1
+
+          message PURCHASEUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required PURCHASEUNITID PurchaseUnitID = 2
+          required double PurchasePriceUnitId_Id = 3
+
+          message PURCHASEPRICEUNITID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required PURCHASEPRICEUNITID PurchasePriceUnitId = 4
+          required bool IsVmiBusiness = 5
+        }
+
+        repeated MATERIALPURCHASE MaterialPurchase = 15
+
+        message MATERIALPLAN {
+          required double Id = 0
+          required string ReserveType = 1
+          required string PlanMode = 2
+        }
+
+        repeated MATERIALPLAN MaterialPlan = 16
+
+        message MATERIALPRODUCE {
+          required double Id = 0
+          required bool IsMainPrd = 1
+        }
+
+        repeated MATERIALPRODUCE MaterialProduce = 17
+        repeated undefined MaterialAuxPty = 18
+
+        message MATERIALINVPTY {
+          required double Id = 0
+          required bool IsEnable = 1
+          required bool IsAffectPrice = 2
+          required double InvPtyId_Id = 3
+
+          message INVPTYID {
+            required double Id = 0
+            required double msterID = 1
+            required string Number = 2
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 3
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 4
+          }
+
+          required INVPTYID InvPtyId = 4
+        }
+
+        repeated MATERIALINVPTY MaterialInvPty = 19
+
+        message MATERIALQM {
+          required double Id = 0
+          required bool CheckDelivery = 1
+          required bool CheckReturn = 2
+        }
+
+        repeated MATERIALQM MaterialQM = 20
+      }
+
+      required MATERIALID MaterialId = 3
+      required double UnitId_Id = 4
+
+      message UNITID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Precision = 5
+        required string RoundType = 6
+
+        message UNITCONVERTRATE {
+          required double Id = 0
+          required string ConvertType = 1
+        }
+
+        repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+      }
+
+      required UNITID UnitId = 5
+      required double Price = 6
+      required double TaxPrice = 7
+      required double BomId_Id = 8
+
+      message BOMID {
+      }
+
+      required BOMID BomId = 9
+      required double PriceUnitId_Id = 10
+
+      message PRICEUNITID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Precision = 5
+        required string RoundType = 6
+
+        message UNITCONVERTRATE {
+          required double Id = 0
+          required string ConvertType = 1
+        }
+
+        repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+      }
+
+      required PRICEUNITID PriceUnitId = 11
+      required double PriceUnitQty = 12
+      required double PriceCoefficient = 13
+      required double DiscountRate = 14
+      required double Discount = 15
+      repeated undefined Discount_Detail = 16
+      required double TaxRate = 17
+      required double TaxAmount = 18
+      required double AllAmount = 19
+      required double TaxNetPrice = 20
+      required double BaseUnitQty = 21
+      required bool DeliveryControl = 22
+      required double DeliveryMaxQty = 23
+      required double DeliveryMinQty = 24
+      required double TransportLeadTime1 = 25
+      required double BefDisAllAmt = 26
+      required double BefDisAmt = 27
+      required double TaxAmount_LC = 28
+      required double Amount_LC = 29
+      required double AllAmount_LC = 30
+      required string MrpCloseStatus = 31
+      required string MrpFreezeStatus = 32
+      required double FreezerId_Id = 33
+
+      message FREEZERID {
+      }
+
+      required FREEZERID FreezerId = 34
+
+      message FREEZEDATE {
+      }
+
+      required FREEZEDATE FreezeDate = 35
+      required string MrpTerminateStatus = 36
+      required double TerminaterId_Id = 37
+
+      message TERMINATERID {
+      }
+
+      required TERMINATERID TerminaterId = 38
+
+      message TERMINATEDATE {
+      }
+
+      required TERMINATEDATE TerminateDate = 39
+      required double BaseDeliJoinQty = 40
+      required double DeliQty = 41
+      required double StockOutQty = 42
+      required double RetNoticeQty = 43
+      required double ReturnQty = 44
+      required double RemainOutQty = 45
+      required double BaseInvoiceJoinQty = 46
+      required double InvoiceJoinQty = 47
+      required double InvoiceQty = 48
+      required double InvoiceAmount = 49
+      required double ReceiveAmount = 50
+      required double BasePurJoinQty = 51
+      required double PurJoinQty = 52
+      required double PurReqQty = 53
+      required double PurOrderQty = 54
+      required double ReceiptOrgId_Id = 55
+
+      message RECEIPTORGID {
+        required double Id = 0
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 2
+        required string Number = 3
+
+        message FRADIO {
+        }
+
+        required FRADIO FRadio = 4
+        required double ParentOrg_Id = 5
+
+        message PARENTORG {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required PARENTORG ParentOrg = 6
+        required string OrgFunctions = 7
+      }
+
+      required RECEIPTORGID ReceiptOrgId = 56
+      required double SettleOrgId_Id = 57
+
+      message SETTLEORGID {
+        required double Id = 0
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 2
+        required string Number = 3
+
+        message FRADIO {
+        }
+
+        required FRADIO FRadio = 4
+        required double ParentOrg_Id = 5
+
+        message PARENTORG {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required PARENTORG ParentOrg = 6
+        required string OrgFunctions = 7
+      }
+
+      required SETTLEORGID SettleOrgId = 58
+      required double Amount = 59
+      required string Note = 60
+      required double Qty = 61
+      required double LimitDownPrice = 62
+      required double SysPrice = 63
+      required double StockOrgId_Id = 64
+
+      message STOCKORGID {
+        required double Id = 0
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 2
+        required string Number = 3
+
+        message FRADIO {
+        }
+
+        required FRADIO FRadio = 4
+        required double ParentOrg_Id = 5
+
+        message PARENTORG {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required PARENTORG ParentOrg = 6
+        required string OrgFunctions = 7
+      }
+
+      required STOCKORGID StockOrgId = 65
+      required double BaseStockOutQty = 66
+      required double BaseDeliQty = 67
+      required double BaseRetNoticeQty = 68
+      required double BaseReturnQty = 69
+      required double BasePurReqQty = 70
+      required double BasePurOrderQty = 71
+      required double BaseUnitId_Id = 72
+
+      message BASEUNITID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Precision = 5
+        required string RoundType = 6
+
+        message UNITCONVERTRATE {
+          required double Id = 0
+          required string ConvertType = 1
+        }
+
+        repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+      }
+
+      required BASEUNITID BaseUnitId = 73
+      required string ChangeFlag = 74
+      required string MapId_Id = 75
+
+      message MAPID {
+      }
+
+      required MAPID MapId = 76
+      required string OwnerTypeId = 77
+      required double OwnerId_Id = 78
+
+      message OWNERID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+      }
+
+      required OWNERID OwnerId = 79
+      required bool IsFree = 80
+      required double LOCKQTY = 81
+      required bool FLOCKFLAG = 82
+
+      message PRODUCEDATE {
+      }
+
+      required PRODUCEDATE ProduceDate = 83
+
+      message EXPIRYDATE {
+      }
+
+      required EXPIRYDATE ExpiryDate = 84
+      required string ExpUnit = 85
+      required double ExpPeriod = 86
+      required double TaxCombination_Id = 87
+
+      message TAXCOMBINATION {
+      }
+
+      required TAXCOMBINATION TaxCombination = 88
+      required double Lot_Id = 89
+
+      message LOT {
+      }
+
+      required LOT Lot = 90
+      required string Lot_Text = 91
+      required double AuxPropId_Id = 92
+
+      message AUXPROPID {
+      }
+
+      required AUXPROPID AuxPropId = 93
+      required string ReturnType = 94
+      required string DeliveryDate = 95
+      required double TransJoinQty = 96
+      required double BaseTransJoinQty = 97
+      required string SrcType = 98
+      required string SrcBillNo = 99
+      required double BaseDeliveryMaxQty = 100
+      required double BaseDeliveryMinQty = 101
+      required double OEMInStockJoinQty = 102
+      required double BaseOEMInStockJoinQty = 103
+      required double BaseARJoinQty = 104
+      required double InventoryQty = 105
+      required string FBFLowId_Id = 106
+
+      message FBFLOWID {
+      }
+
+      required FBFLOWID FBFLowId = 107
+      required double BASEARQTY = 108
+      required double ARJOINAMOUNT = 109
+      required double ARAMOUNT = 110
+      required double BaseRemainOutQty = 111
+      required double ReBackQty = 112
+      required double BaseReBackQty = 113
+      required double ARQTY = 114
+      required double CanOutQty = 115
+      required double BaseCanOutQty = 116
+      required double CanReturnQty = 117
+      required double BaseCanReturnQty = 118
+      required double BASEAPQTY = 119
+      required double FAPAMOUNT = 120
+      required string MtoNo = 121
+      required double Priority = 122
+      required string ReserveType = 123
+      required string MinPlanDeliveryDate = 124
+      required string DeliveryStatus = 125
+      required double OldQty = 126
+      required string PromotionMatchType = 127
+      required double PriceListEntry_Id = 128
+
+      message PRICELISTENTRY {
+      }
+
+      required PRICELISTENTRY PriceListEntry = 129
+      required double AwaitQty = 130
+      required double AvailableQty = 131
+      required double SupplyOrgId_Id = 132
+
+      message SUPPLYORGID {
+        required double Id = 0
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 2
+        required string Number = 3
+
+        message FRADIO {
+        }
+
+        required FRADIO FRadio = 4
+        required double ParentOrg_Id = 5
+
+        message PARENTORG {
+          required double Id = 0
+          required string Number = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+        }
+
+        required PARENTORG ParentOrg = 6
+        required string OrgFunctions = 7
+      }
+
+      required SUPPLYORGID SupplyOrgId = 133
+      required double NetOrderEntryId = 134
+      required double PriceBaseQty = 135
+      required double SetPriceUnitID_Id = 136
+
+      message SETPRICEUNITID {
+      }
+
+      required SETPRICEUNITID SetPriceUnitID = 137
+      required double StockUnitID_Id = 138
+
+      message STOCKUNITID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Precision = 5
+        required string RoundType = 6
+
+        message UNITCONVERTRATE {
+          required double Id = 0
+          required string ConvertType = 1
+        }
+
+        repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+      }
+
+      required STOCKUNITID StockUnitID = 139
+      required double StockQty = 140
+      required double StockBaseQty = 141
+      required double StockBaseCanOutQty = 142
+      required double StockBaseCanReturnQty = 143
+      required double StockBaseARJoinQty = 144
+      required double StockBaseTransJoinQty = 145
+
+      message SERVICECONTEXT {
+      }
+
+      required SERVICECONTEXT ServiceContext = 146
+      required double StockBasePurJoinQty = 147
+      required double SalBaseNum = 148
+      required double StockBaseDen = 149
+      required double SRCBIZUNITID_Id = 150
+
+      message SRCBIZUNITID {
+      }
+
+      required SRCBIZUNITID SRCBIZUNITID = 151
+      required double PurBaseQty = 152
+      required double PurUnitID_Id = 153
+
+      message PURUNITID {
+      }
+
+      required PURUNITID PurUnitID = 154
+      required double PurQty = 155
+      required double SalBaseARJoinQty = 156
+      required double STOCKBASESTOCKOUTQTY = 157
+      required double STOCKBASEREBACKQTY = 158
+      required string OUTLMTUNIT = 159
+      required double OutLmtUnitID_Id = 160
+
+      message OUTLMTUNITID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Precision = 5
+        required string RoundType = 6
+
+        message UNITCONVERTRATE {
+          required double Id = 0
+          required string ConvertType = 1
+        }
+
+        repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+      }
+
+      required OUTLMTUNITID OutLmtUnitID = 161
+      required double TRANSRETURNQTY = 162
+      required double TRANSRETURNBASEQTY = 163
+      required double CONSIGNSETTQTY = 164
+      required double CONSIGNSETTBASEQTY = 165
+      required double LeftQty = 166
+      required double CurrentInventory = 167
+      required string RowType = 168
+      required double ParentMatId_Id = 169
+
+      message PARENTMATID {
+      }
+
+      required PARENTMATID ParentMatId = 170
+      required string RowId = 171
+      required string ParentRowId = 172
+      required double InStockPrice = 173
+      required double SOStockId_Id = 174
+
+      message SOSTOCKID {
+      }
+
+      required SOSTOCKID SOStockId = 175
+      required double SOStockLocalId_Id = 176
+
+      message SOSTOCKLOCALID {
+      }
+
+      required SOSTOCKLOCALID SOStockLocalId = 177
+      required double PurPriceUnitId_Id = 178
+
+      message PURPRICEUNITID {
+      }
+
+      required PURPRICEUNITID PurPriceUnitId = 179
+      required bool FISMRP = 180
+      required string FBarcode = 181
+      required double FBranchId_Id = 182
+
+      message FBRANCHID {
+      }
+
+      required FBRANCHID FBranchId = 183
+      required bool FRetailSaleProm = 184
+      required double BASEFINARQTY = 185
+      required double SALBASEFINARQTY = 186
+      required double EntryDiscountList_Id = 187
+
+      message ENTRYDISCOUNTLIST {
+      }
+
+      required ENTRYDISCOUNTLIST EntryDiscountList = 188
+      required double PriceDiscount = 189
+      required double ZHJStockQty = 190
+      required string SPMENTRYID = 191
+      required string SPMANDRPMCONTENT = 192
+      required double TransReturnStockBaseQty = 193
+      required bool TailDiffFlag = 194
+      required string FZTDetailId = 195
+      required string F_ora_orderType_Id = 196
+
+      message F_ORA_ORDERTYPE {
+      }
+
+      required F_ORA_ORDERTYPE F_ora_orderType = 197
+
+      message ORDERENTRYPLAN {
+        required double Id = 0
+        required double Seq = 1
+        required double StockId_Id = 2
+
+        message STOCKID {
+        }
+
+        required STOCKID StockId = 3
+        required double PlanUnitId_Id = 4
+
+        message PLANUNITID {
+          required double Id = 0
+          required double msterID = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+          required string Number = 4
+          required double Precision = 5
+          required string RoundType = 6
+
+          message UNITCONVERTRATE {
+            required double Id = 0
+            required string ConvertType = 1
+          }
+
+          repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+        }
+
+        required PLANUNITID PlanUnitId = 5
+        required double PlanQty = 6
+        required double DeliCommitQty = 7
+        required double DeliRemainQty = 8
+        required double DetailLocId_Id = 9
+
+        message DETAILLOCID {
+        }
+
+        required DETAILLOCID DetailLocId = 10
+        required string DetailLocAddress = 11
+        required string PlanDate = 12
+        required string PlanDeliveryDate = 13
+        required double TransportLeadTime = 14
+        required double BasePlanQty = 15
+        required double BaseDeliCommitQty = 16
+        required double BaseDeliRemainQty = 17
+        required double PlanBaseUnitId_Id = 18
+
+        message PLANBASEUNITID {
+          required double Id = 0
+          required double msterID = 1
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 3
+          required string Number = 4
+          required double Precision = 5
+          required string RoundType = 6
+
+          message UNITCONVERTRATE {
+            required double Id = 0
+            required string ConvertType = 1
+          }
+
+          repeated UNITCONVERTRATE UNITCONVERTRATE = 7
+        }
+
+        required PLANBASEUNITID PlanBaseUnitId = 19
+        required double NOTICEQTY = 20
+        required double NOTICEREMAINQTY = 21
+        required double NOTICEBASEQTY = 22
+        required double NOTICEREMAINBASEQTY = 23
+        required string F_ora_Consignee = 24
+
+        message F_ORA_PLANARRIVAL {
+        }
+
+        required F_ORA_PLANARRIVAL F_ora_planArrival = 25
+        required string F_ora_telePhone = 26
+      }
+
+      repeated ORDERENTRYPLAN OrderEntryPlan = 198
+      repeated undefined SAL_ORDERENTRYTAX = 199
+      repeated undefined FSaleOrderEntry_Link = 200
+    }
+
+    repeated SALEORDERENTRY SaleOrderEntry = 77
+
+    message SALEORDERFINANCE {
+      required double Id = 0
+      required double LocalCurrId_Id = 1
+
+      message LOCALCURRID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required string Sysmbol = 5
+        required double PriceDigits = 6
+        required double AmountDigits = 7
+        required bool IsShowCSymbol = 8
+        required string FormatOrder = 9
+        required string RoundType = 10
+      }
+
+      required LOCALCURRID LocalCurrId = 2
+      required double ExchangeTypeId_Id = 3
+
+      message EXCHANGETYPEID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required double Digits = 5
+        required double ReverseDigits = 6
+      }
+
+      required EXCHANGETYPEID ExchangeTypeId = 4
+      required double ExchangeRate = 5
+      required double PayAdvanceRate = 6
+      required double PayAdvanceAmount = 7
+      required double DiscountListId_Id = 8
+
+      message DISCOUNTLISTID {
+      }
+
+      required DISCOUNTLISTID DiscountListId = 9
+      required double SettleCurrId_Id = 10
+
+      message SETTLECURRID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+        required string Sysmbol = 5
+        required double PriceDigits = 6
+        required double AmountDigits = 7
+        required bool IsShowCSymbol = 8
+        required string FormatOrder = 9
+        required string RoundType = 10
+      }
+
+      required SETTLECURRID SettleCurrId = 11
+      required double BillTaxAmount_LC = 12
+      required double BillAmount_LC = 13
+      required double BillAllAmount = 14
+      required double BillAllAmount_LC = 15
+      required double PriceListId_Id = 16
+
+      message PRICELISTID {
+      }
+
+      required PRICELISTID PriceListId = 17
+      required double BillTaxAmount = 18
+      required double BillAmount = 19
+      required bool IsIncludedTax = 20
+      required bool NeedPayAdvance = 21
+      required double RecBillId_Id = 22
+
+      message RECBILLID {
+      }
+
+      required RECBILLID RecBillId = 23
+      required double RecConditionId_Id = 24
+
+      message RECCONDITIONID {
+      }
+
+      required RECCONDITIONID RecConditionId = 25
+      required double SettleModeId_Id = 26
+
+      message SETTLEMODEID {
+        required double Id = 0
+        required double msterID = 1
+
+        message MULTILANGUAGETEXT {
+          required double PkId = 0
+          required double LocaleId = 1
+          required string Name = 2
+        }
+
+        repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+        message NAME {
+          required double Key = 0
+          required string Value = 1
+        }
+
+        repeated NAME Name = 3
+        required string Number = 4
+      }
+
+      required SETTLEMODEID SettleModeId = 27
+      required double JoinStockAmount = 28
+      required double JoinOrderAmount = 29
+      required string CreChkStatus = 30
+      required double CreChkDays = 31
+      required double CreChkAmount = 32
+      required string FCrePreBatAndMonStatus = 33
+      required string FCrePreBatchOver = 34
+      required string FCreMonControlOver = 35
+      required bool IsPriceExcludeTax = 36
+      required double FMarginLevel = 37
+      required double FAssociateMargin = 38
+      required double FMargin = 39
+      required double FAssRefundMargin = 40
+      required double CreChkOverAmount = 41
+      required bool OverOrgTransDirect = 42
+      required string FRecNoticeNo = 43
+      required string FRecBarcodeLink = 44
+    }
+
+    repeated SALEORDERFINANCE SaleOrderFinance = 78
+
+    message SALEORDERPLAN {
+      required double Id = 0
+      required double Seq = 1
+      required bool NeedRecAdvance = 2
+      required double RecAdvanceRate = 3
+
+      message MUSTDATE {
+      }
+
+      required MUSTDATE MustDate = 4
+      required double RecAdvanceAmount = 5
+      required double RecAmount = 6
+      required string RelBillNo = 7
+      required string ReMark = 8
+      required string ReceiveType_Id = 9
+
+      message RECEIVETYPE {
+      }
+
+      required RECEIVETYPE ReceiveType = 10
+      required string ControlSend = 11
+      required double PlanMaterialId_Id = 12
+
+      message PLANMATERIALID {
+      }
+
+      required PLANMATERIALID PlanMaterialId = 13
+      required double MaterialSeq = 14
+      required double OrderEntryId = 15
+      required double ASSAMOUNTFOR = 16
+      required double ASSDEDAMOUNTFOR = 17
+      required bool IsOutStockByRecamount = 18
+      required string MaterialRowID = 19
+      required double FAGGRecAmount = 20
+      required double MaterialTaxPrice = 21
+      required double MaterialPriceQty = 22
+      required double MaterialPriceUnitID_Id = 23
+
+      message MATERIALPRICEUNITID {
+      }
+
+      required MATERIALPRICEUNITID MaterialPriceUnitID = 24
+
+      message SAL_ORDERPLANENTRY {
+        required double Id = 0
+        required double Seq = 1
+        required double ActRecAmount = 2
+        required string AdvanceNo = 3
+        required string AdvanceSeq = 4
+        required double RemainAmount = 5
+        required double ADVANCEENTRYID = 6
+        required double ADVANCEID = 7
+        required double PreMatchAmountFor = 8
+        required double SettleOrgId_Id = 9
+
+        message SETTLEORGID {
+          required double Id = 0
+
+          message MULTILANGUAGETEXT {
+            required double PkId = 0
+            required double LocaleId = 1
+            required string Name = 2
+          }
+
+          repeated MULTILANGUAGETEXT MultiLanguageText = 1
+
+          message NAME {
+            required double Key = 0
+            required string Value = 1
+          }
+
+          repeated NAME Name = 2
+          required string Number = 3
+
+          message FRADIO {
+          }
+
+          required FRADIO FRadio = 4
+          required double ParentOrg_Id = 5
+
+          message PARENTORG {
+            required double Id = 0
+            required string Number = 1
+
+            message MULTILANGUAGETEXT {
+              required double PkId = 0
+              required double LocaleId = 1
+              required string Name = 2
+            }
+
+            repeated MULTILANGUAGETEXT MultiLanguageText = 2
+
+            message NAME {
+              required double Key = 0
+              required string Value = 1
+            }
+
+            repeated NAME Name = 3
+          }
+
+          required PARENTORG ParentOrg = 6
+          required string OrgFunctions = 7
+        }
+
+        required SETTLEORGID SettleOrgId = 10
+      }
+
+      repeated SAL_ORDERPLANENTRY SAL_ORDERPLANENTRY = 25
+    }
+
+    repeated SALEORDERPLAN SaleOrderPlan = 79
+    repeated undefined SalOrderTrace = 80
+
+    message BOS_CONVERTTAKEDATAINFO {
+    }
+
+    required BOS_CONVERTTAKEDATAINFO BOS_ConvertTakeDataInfo = 81
+  }
+
+  required RESULT Result = 1
+}

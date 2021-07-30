@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.example.helloworld.entity;
+
+option optimize_for =SPEED;
+//option java_package = "com.badao.protobuf";
+option java_outer_classname = "DataInfo";
+
+message Student {
+  string name = 1;
+  int32 age = 2;
+  string address = 3;
+}

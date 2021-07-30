@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.example.helloworld.entity;
+
+option optimize_for =SPEED;
+//option java_package = "com.badao.protobuf";
+option java_outer_classname = "DataInfo";
+option java_multiple_files = true;
+
+
+// 服务接口.定义请求参数和相应结果
+service RPCDateService {
+  rpc getDate (RPCDateRequest) returns (RPCDateResponse) {
+  }
+}
+
+// 定义请求体
+message RPCDateRequest {
+  string userName = 1;
+}
+
+// 定义相应内容
+message RPCDateResponse {
+  string serverDate = 1;
+}
