@@ -1,0 +1,17 @@
+[Desktop Entry]
+#写自己的Typora版本
+Version=13.6.1
+Name=Typora
+Exec=/usr/share/typora/Typora %U
+Icon=/usr/share/typora/resources/assets/icon/icon_128x128.png
+Type=Application
+Terminal=false
+
+
+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
+git remote set-url origin/master https://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@github.com/zhouffan/senior-engineer.git
+
+
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh
+chmod +x shadowsocksR.sh
+./shadowsocksR.sh 2>&1 | tee shadowsocksR.log
